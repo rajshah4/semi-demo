@@ -1,6 +1,4 @@
-// Synchronous FIFO implementation
-// Generated for OpenHands semiconductor demo
-// Specialist model: HF-ChipCraftX-RTLGen-7B (intended)
+// Synchronous FIFO implementation for the OpenHands semiconductor demo.
 
 module sync_fifo #(
   parameter int WIDTH = 8,
@@ -16,7 +14,7 @@ module sync_fifo #(
   output logic             empty
 );
 
-  localparam int ADDR_WIDTH = $clog2(DEPTH);
+  localparam int ADDR_WIDTH = (DEPTH <= 1) ? 1 : $clog2(DEPTH);
 
   logic [WIDTH-1:0] mem [0:DEPTH-1];
   logic [ADDR_WIDTH-1:0] wr_ptr;
@@ -26,12 +24,10 @@ module sync_fifo #(
   logic write_op;
   logic read_op;
 
-  always_comb begin
-    write_op = wr_en && !full;
-    read_op = rd_en && !empty;
-    full = (count == DEPTH[ADDR_WIDTH:0]);
-    empty = (count == '0);
-  end
+  assign full = (count == DEPTH);
+  assign empty = (count == '0);
+  assign write_op = wr_en && !full;
+  assign read_op = rd_en && !empty;
 
   always_ff @(posedge clk) begin
     if (!rst_n) begin
@@ -42,12 +38,20 @@ module sync_fifo #(
     end else begin
       if (write_op) begin
         mem[wr_ptr] <= din;
-        wr_ptr <= (wr_ptr + 1'b1) % DEPTH[ADDR_WIDTH-1:0];
+        if (wr_ptr == DEPTH - 1) begin
+          wr_ptr <= '0;
+        end else begin
+          wr_ptr <= wr_ptr + 1'b1;
+        end
       end
 
       if (read_op) begin
         dout <= mem[rd_ptr];
-        rd_ptr <= (rd_ptr + 1'b1) % DEPTH[ADDR_WIDTH-1:0];
+        if (rd_ptr == DEPTH - 1) begin
+          rd_ptr <= '0;
+        end else begin
+          rd_ptr <= rd_ptr + 1'b1;
+        end
       end
 
       case ({write_op, read_op})
