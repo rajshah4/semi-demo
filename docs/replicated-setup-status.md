@@ -58,6 +58,30 @@ The completed conversation produced the expected launcher summary:
 - validation plan
 - evidence/audit framing
 
+## Fresh Smoke Test After Model Profiles
+
+Trigger:
+
+- Created GitHub issue #2 with `rtl-request`.
+- Added label `openhands-rtl-sidekick`.
+
+Result:
+
+- Automation run: `a96dad55-99be-493b-904e-f8d7fdf6aad7`
+- Status: `COMPLETED`
+- Conversation: `a9d99f2c-d66c-419b-83a8-7dcd42412451`
+- Conversation URL: https://app.replicated.rajistics.com/conversations/a9d99f2c-d66c-419b-83a8-7dcd42412451
+
+The completed conversation produced the expected sidekick markers:
+
+- `DEMO_STEP 0: Foundry RTL Sidekick Launcher`
+- event summary
+- child conversation plan
+- model route table
+- validation plan
+- evidence/audit framing
+- SambaNova and ChipCraftX references
+
 ## Secret Status
 
 Local source file:
