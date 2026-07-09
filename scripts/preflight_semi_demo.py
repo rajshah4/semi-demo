@@ -24,6 +24,7 @@ REQUIRED_FILES = [
     "docs/work-cells.md",
     "docs/parent-child-conversations.md",
     "docs/intelligent-model-routing.md",
+    "docs/replicated-setup-status.md",
     "docs/repo-memory/model-routing-policy.md",
     ".github/labels.json",
     ".github/ISSUE_TEMPLATE/rtl_request.md",

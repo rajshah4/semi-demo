@@ -58,6 +58,7 @@ The strongest differentiators to show:
 - `docs/local-cloud-airgap.md` - deployment tradeoffs
 - `docs/toolchain-image.md` - what to pre-bake into an EDA image
 - `docs/automation-entrypoint.md` - webhook and polling automation starting points
+- `docs/replicated-setup-status.md` - GitHub/Rajistics registration and smoke-test status
 - `docs/inspiration.md` - outside references and demo ideas to mine later
 - `docs/repo-memory/` - durable agent memory and policy notes
 - `automations/github/` - label-triggered GitHub automation prompt packages
