@@ -98,15 +98,20 @@ Added in Rajistics via `/api/v1/secrets` on 2026-07-08:
 - `HF_TOKEN`
 - `SAMBANOVA_API_KEY`
 
-Add or verify before the full model-routed demo:
+Added/verified LLM profile setup:
 
 1. ChipCraftX profile on Rajistics
    - Local Canvas has `HF-ChipCraftX-RTLGen-7B`.
-   - Need equivalent Rajistics profile or helper tool before showing live ChipCraftX generation.
+   - Rajistics now also has `HF-ChipCraftX-RTLGen-7B`.
+   - Model: `huggingface/featherless-ai/chipcraftx-io/chipcraftx-rtlgen-7b`.
+   - Readback shows `api_key_set: true`; the stored key value was not printed.
 
 2. SambaNova LLM profile on Rajistics
    - The `SAMBANOVA_API_KEY` secret is now present.
-   - Need a saved LLM profile or helper path before using SambaNova as a model-routed fast inference backend.
+   - Attempted profile name: `SambaNova-Llama-3.3-70B`.
+   - Intended model: `sambanova/Meta-Llama-3.3-70B-Instruct`.
+   - The profile save returned `409` after the ChipCraftX profile brought the current profile list to 10 entries.
+   - Do not delete existing Bedrock/demo profiles blindly. For the live demo, either free one saved-profile slot or use the secret-backed helper path for SambaNova fast inference.
 
 3. Model Router/meta-profile support
    - Current local Agent Canvas did not expose `/api/meta-profiles`.
