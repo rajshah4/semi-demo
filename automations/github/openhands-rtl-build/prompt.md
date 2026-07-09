@@ -19,12 +19,22 @@ Given a GitHub issue labeled `openhands-rtl-build`, generate or patch RTL and va
 9. Patch the RTL and rerun `bash scripts/validate_rtl.sh` until it passes or the remaining blocker is a missing EDA tool/runtime limitation.
 10. Open or update a PR with evidence.
 
+## Model Evidence Rule
+
+Do not claim a model was used unless there is direct conversation evidence:
+
+- successful `switch_llm` call or observation for that profile
+- validation/log output generated after that switch
+
+If `switch_llm` is unavailable, blocked, or not called, say exactly that. In that case, describe the profile as "available/configured" or "intended", not "used".
+
 ## Completion
 
 Post a summary with:
 
 - files changed
 - models used
+- model-switch evidence, or a clear statement that no switch occurred
 - validation commands
 - pass/fail status
 - whether validation was full EDA-backed or static-only because tools were missing
