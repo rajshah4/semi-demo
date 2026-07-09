@@ -1,0 +1,13 @@
+{
+  "name": "Semi Demo RTL Sidekick",
+  "preset": "prompt",
+  "prompt_file": "prompt.md",
+  "trigger": {
+    "type": "event",
+    "source": "github",
+    "on": "issues.labeled",
+    "filter": "label.name == 'openhands-rtl-sidekick'"
+  },
+  "timeout": 900
+}
+

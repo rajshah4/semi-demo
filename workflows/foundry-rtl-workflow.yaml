@@ -1,0 +1,79 @@
+name: foundry-rtl-request
+description: Event-driven OpenHands workflow for model-routed RTL generation and validation.
+
+trigger:
+  type: event
+  examples:
+    - github.issue.opened
+    - jira.issue.created
+    - custom.design_request.created
+
+inputs:
+  - event_payload
+  - target_repository
+  - allowed_models
+  - validation_profile
+
+steps:
+  - id: intake
+    title: Read and classify request
+    route: orchestrator
+    outputs:
+      - normalized_spec
+      - interfaces
+      - acceptance_tests
+
+  - id: generate_rtl
+    title: Generate first RTL implementation
+    route: rtl_specialist
+    outputs:
+      - rtl_module
+
+  - id: write_tests
+    title: Create validation harness
+    route: orchestrator
+    outputs:
+      - testbench
+      - lint_config
+
+  - id: validate
+    title: Run EDA validation
+    route: eda_tools
+    commands:
+      - verilator --lint-only
+      - iverilog
+      - yosys
+
+  - id: triage_failures
+    title: Summarize and classify tool failures
+    route: fast_general
+    condition: validation.failed
+    outputs:
+      - failure_summary
+      - candidate_fix_strategy
+
+  - id: repair_rtl
+    title: Patch RTL or tests
+    route: orchestrator_plus_rtl_specialist
+    condition: validation.failed
+    outputs:
+      - patch
+
+  - id: summarize
+    title: Produce final audit summary
+    route: orchestrator
+    outputs:
+      - files_changed
+      - validations_run
+      - pass_fail_status
+      - next_steps
+
+exit_conditions:
+  success:
+    - validation.passed
+  escalate:
+    - max_iterations_reached
+    - spec_ambiguous
+    - toolchain_missing
+    - license_or_pdk_unavailable
+

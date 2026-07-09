@@ -1,0 +1,49 @@
+{
+  "event_type": "design_request.created",
+  "source": "foundry-demo-portal",
+  "request_id": "RTL-1024",
+  "title": "Create a parameterized synchronous FIFO",
+  "priority": "demo",
+  "labels": ["rtl-request", "verilog", "agent-demo"],
+  "repository": {
+    "provider": "github",
+    "full_name": "example/foundry-rtl-demo",
+    "branch": "demo/fifo-request"
+  },
+  "requester": {
+    "name": "Demo User",
+    "team": "Foundry IT"
+  },
+  "requirements": {
+    "language": "SystemVerilog",
+    "module_name": "sync_fifo",
+    "parameters": {
+      "WIDTH": 8,
+      "DEPTH": 16
+    },
+    "interface": [
+      "clk",
+      "rst_n",
+      "wr_en",
+      "rd_en",
+      "din[WIDTH-1:0]",
+      "dout[WIDTH-1:0]",
+      "full",
+      "empty"
+    ],
+    "behavior": [
+      "synchronous active-low reset",
+      "write when wr_en is high and FIFO is not full",
+      "read when rd_en is high and FIFO is not empty",
+      "full and empty flags must update correctly",
+      "no combinational loops",
+      "synthesizable RTL only"
+    ],
+    "validation": [
+      "lint with Verilator or Verible",
+      "simulate reset, fill, drain, simultaneous read/write",
+      "summarize failures and repair until passing"
+    ]
+  }
+}
+

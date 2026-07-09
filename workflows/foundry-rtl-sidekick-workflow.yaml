@@ -1,0 +1,91 @@
+name: foundry-rtl-sidekick
+description: Visible parent/child conversation workflow for foundry RTL automation.
+
+trigger:
+  type: event
+  examples:
+    - github.issues.labeled: openhands-rtl-sidekick
+    - jira.issue_created: sidekick-rtl
+    - custom.design_request.created
+
+steps:
+  - id: parent_launcher
+    title: Parent orchestrator unwraps event and prints index
+    conversation: parent
+    route: orchestrator
+    outputs:
+      - event_summary
+      - child_conversation_index
+      - initial_model_route
+
+  - id: spec_scout
+    title: Spec scout normalizes requirements
+    conversation: child
+    readonly: true
+    route: orchestrator_or_fast_general
+    outputs:
+      - normalized_spec
+      - ambiguities
+      - acceptance_tests
+
+  - id: repo_scout
+    title: RTL repo scout finds existing patterns
+    conversation: child
+    readonly: true
+    route: fast_general
+    outputs:
+      - likely_files
+      - reusable_patterns
+      - test_locations
+
+  - id: toolchain_scout
+    title: Toolchain scout identifies available validation commands
+    conversation: child
+    readonly: true
+    route: deterministic_then_fast_general
+    outputs:
+      - available_tools
+      - missing_tools
+      - recommended_validation_order
+
+  - id: model_route_scout
+    title: Model route scout recommends task/model mapping
+    conversation: child
+    readonly: true
+    route: model_router
+    outputs:
+      - selected_profiles
+      - route_rationale
+      - data_boundary_notes
+
+  - id: main_implementation
+    title: Main implementation consumes child briefs and edits code
+    conversation: parent_or_main_child
+    route: orchestrator_plus_rtl_specialist
+    inputs:
+      - normalized_spec
+      - likely_files
+      - available_tools
+      - selected_profiles
+    outputs:
+      - rtl_changes
+      - test_changes
+      - validation_results
+
+  - id: qa_review
+    title: QA/review posts EDA evidence and human gate
+    conversation: child_or_followup
+    route: eda_tools_plus_review_model
+    outputs:
+      - pass_fail_table
+      - review_findings
+      - human_gate_status
+
+demo_index_fields:
+  - step
+  - title
+  - conversation_url
+  - model_profile
+  - status
+  - summary
+

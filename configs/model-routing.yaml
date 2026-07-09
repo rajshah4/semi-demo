@@ -1,0 +1,52 @@
+models:
+  orchestrator:
+    name: Sonnet
+    role: planning, orchestration, hard reasoning, final review
+    profile_hint: claude-sonnet-4-6
+  fast_general:
+    name: SambaNova Llama 3.3 70B
+    role: fast general coding, log analysis, short patch loops
+    profile_hint: SambaNova-Llama-3.3-70B
+  rtl_specialist:
+    name: ChipCraftX RTLGen 7B
+    role: Verilog/SystemVerilog generation and repair
+    profile_hint: HF-ChipCraftX-RTLGen-7B
+    model: huggingface/featherless-ai/chipcraftx-io/chipcraftx-rtlgen-7b
+  private_sensitive:
+    name: Local or private model
+    role: sensitive IP and air-gapped work
+    profile_hint: customer-private-model
+
+routes:
+  - match:
+      task_type: intake
+    use: orchestrator
+    reason: clarify ambiguous event payloads and build the plan
+  - match:
+      task_type: rtl_generation
+      languages: [verilog, systemverilog, vhdl]
+    use: rtl_specialist
+    reason: domain-tuned model for first-pass RTL
+  - match:
+      task_type: log_triage
+    use: fast_general
+    reason: low-latency repeated summaries and simple fixes
+  - match:
+      task_type: validation
+    use: eda_tools
+    reason: tools are the source of truth
+  - match:
+      data_boundary: air_gapped
+    use: private_sensitive
+    reason: keep sensitive IP inside approved environment
+
+validation_tools:
+  lint:
+    - verilator
+    - verible
+  simulate:
+    - iverilog
+    - cocotb
+  synthesize:
+    - yosys
+

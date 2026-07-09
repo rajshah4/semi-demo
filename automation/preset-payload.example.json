@@ -1,0 +1,19 @@
+{
+  "name": "Foundry RTL Request Demo",
+  "prompt": "Use the prompt from automation/foundry-rtl-request.prompt.md. Process the incoming RTL request event, route work to the right models, generate RTL, run validation, repair failures, and summarize results.",
+  "trigger": {
+    "type": "event",
+    "source": "github",
+    "on": "issues.opened",
+    "filter": "contains(issue.labels[].name, 'rtl-request')"
+  },
+  "timeout": 900,
+  "repos": [
+    {
+      "url": "example/foundry-rtl-demo",
+      "provider": "github",
+      "ref": "main"
+    }
+  ]
+}
+

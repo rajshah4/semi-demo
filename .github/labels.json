@@ -1,0 +1,47 @@
+[
+  {
+    "name": "rtl-request",
+    "color": "5319e7",
+    "description": "Issue contains a requested RTL/design automation task"
+  },
+  {
+    "name": "openhands-rtl-context",
+    "color": "1d76db",
+    "description": "Run OpenHands RTL context scout"
+  },
+  {
+    "name": "openhands-rtl-build",
+    "color": "0e8a16",
+    "description": "Run OpenHands RTL build workflow"
+  },
+  {
+    "name": "openhands-rtl-sidekick",
+    "color": "5319e7",
+    "description": "Run visible parent/child RTL sidekick workflow"
+  },
+  {
+    "name": "openhands-rtl-qa",
+    "color": "fbca04",
+    "description": "Run OpenHands EDA QA workflow"
+  },
+  {
+    "name": "openhands-rtl-review",
+    "color": "b60205",
+    "description": "Run OpenHands RTL review workflow"
+  },
+  {
+    "name": "openhands:in-progress",
+    "color": "c5def5",
+    "description": "OpenHands automation is currently working"
+  },
+  {
+    "name": "openhands:needs-human",
+    "color": "d93f0b",
+    "description": "OpenHands needs human input or approval"
+  },
+  {
+    "name": "openhands:done",
+    "color": "0e8a16",
+    "description": "OpenHands automation completed"
+  }
+]

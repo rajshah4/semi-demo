@@ -1,0 +1,23 @@
+{
+  "classifier_model": "SambaNova-Llama-3.3-70B",
+  "default_model": "claude-sonnet-4-6",
+  "classes": [
+    {
+      "description": "RTL or hardware-design generation/repair tasks involving Verilog, SystemVerilog, VHDL, module interfaces, reset behavior, FIFO/arbiter/register-file implementation, or synthesizable logic",
+      "model": "HF-ChipCraftX-RTLGen-7B"
+    },
+    {
+      "description": "Fast general coding tasks, test-log triage, CI output summarization, small patch loops, or repeated edit/test iterations",
+      "model": "SambaNova-Llama-3.3-70B"
+    },
+    {
+      "description": "Complex planning, ambiguous requirements, final review, safety-sensitive engineering judgment, or multi-file architectural decisions",
+      "model": "claude-sonnet-4-6"
+    },
+    {
+      "description": "Sensitive IP, air-gapped tasks, private foundry context, or work that must stay inside an approved local/private model boundary",
+      "model": "customer-private-model"
+    }
+  ]
+}
+

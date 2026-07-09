@@ -1,0 +1,24 @@
+{
+  "action": "labeled",
+  "label": {
+    "name": "openhands-rtl-context"
+  },
+  "repository": {
+    "full_name": "example/foundry-rtl-demo",
+    "html_url": "https://github.com/example/foundry-rtl-demo"
+  },
+  "issue": {
+    "number": 42,
+    "title": "RTL: create a parameterized synchronous FIFO",
+    "labels": [
+      {
+        "name": "rtl-request"
+      },
+      {
+        "name": "openhands-rtl-context"
+      }
+    ],
+    "body": "Create a synthesizable SystemVerilog FIFO with WIDTH=8, DEPTH=16, active-low synchronous reset, full/empty flags, and simulation coverage for fill/drain and simultaneous read/write."
+  }
+}
+
