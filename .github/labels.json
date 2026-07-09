@@ -30,6 +30,11 @@
     "description": "Run OpenHands RTL review workflow"
   },
   {
+    "name": "openhands-rtl-model-switch",
+    "color": "5319e7",
+    "description": "Run focused OpenHands model switch proof"
+  },
+  {
     "name": "openhands:in-progress",
     "color": "c5def5",
     "description": "OpenHands automation is currently working"

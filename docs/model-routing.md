@@ -40,6 +40,16 @@ See `configs/meta-profile.semi-foundry-router.example.json`.
 
 > A coding agent becomes much more valuable when it can choose the right model for each step of the workflow.
 
+## Evidence Ladder
+
+Use the strongest claim that the current runtime actually proves:
+
+1. `SwitchLLMObservation` found in the conversation log: claim live model switching.
+2. Saved profiles plus automation prompt route found, but no switch observation: claim configured routing policy and explain the runner gap.
+3. No profile access: show the repo policy and keep routing as roadmap/demo design.
+
+The `openhands-rtl-model-switch` automation exists to test the first rung without mixing in code generation, branches, PRs, or EDA setup.
+
 ## Caveat
 
 ChipCraftX should be shown as an RTL specialist, not as the primary agent brain. The primary agent should orchestrate, call tools, read logs, and decide when to invoke ChipCraftX.

@@ -35,6 +35,7 @@ REQUIRED_FILES = [
     "automations/github/openhands-rtl-sidekick/prompt.md",
     "automations/github/openhands-rtl-qa/prompt.md",
     "automations/github/openhands-rtl-review/prompt.md",
+    "automations/github/openhands-rtl-model-switch/prompt.md",
     "scripts/validate_rtl.sh",
     "skills/foundry-sidekick-launcher/SKILL.md",
     "skills/foundry-context-sidekick/SKILL.md",

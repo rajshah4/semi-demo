@@ -168,6 +168,15 @@ Routing table to narrate:
 | sensitive IP | local/private model |
 | pass/fail correctness | EDA tools |
 
+Demo decision before the meeting:
+
+- If issue #5, or a newer proof run, contains an actual `SwitchLLMObservation`, show the event log as the live routing proof.
+- If the prompt-preset runner still lacks `switch_llm`, do not show the proof run live. Say the profiles and routing policy are configured, then position model routing as the next live proof point for a router-enabled SDK/Canvas build.
+
+Safe wording when the proof is absent:
+
+> The important product idea is model routing by policy. In this Rajistics prompt-preset runner, the model-switch tool is not exposed yet, so I am not going to pretend it switched live. I will show the configured profiles and policy, then use automation, child conversations, and EDA validation as the live proof.
+
 ### 6. Generate RTL With ChipCraftX
 
 Show: ChipCraftX profile or an OpenHands step calling the specialist.
@@ -321,4 +330,3 @@ Features:
 - EDA toolchain grounding
 - local/cloud/air-gapped deployment
 ```
-

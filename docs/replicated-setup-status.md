@@ -18,6 +18,7 @@ Labels were applied from `.github/labels.json`, including:
 - `openhands-rtl-sidekick`
 - `openhands-rtl-qa`
 - `openhands-rtl-review`
+- `openhands-rtl-model-switch`
 
 ## Rajistics Automations
 
@@ -34,6 +35,7 @@ Registered prompt-preset automations:
 | Semi Demo RTL Sidekick | `3d384e2c-b9d3-4d91-af28-f3fba25ff2f9` | GitHub `issues.labeled`, label `openhands-rtl-sidekick` |
 | Semi Demo RTL QA | `7debee2e-4180-4e63-a9d4-8b10b5fcfe72` | GitHub `pull_request.labeled`, label `openhands-rtl-qa` |
 | Semi Demo RTL Review | `f0dbda84-1579-4356-a252-4016b6c77a46` | GitHub `pull_request.labeled`, label `openhands-rtl-review` |
+| Semi Demo RTL Model Switch Proof | `5162ea58-4c19-4c2c-82bf-cd41ecbf8735` | GitHub `issues.labeled`, label `openhands-rtl-model-switch` |
 
 ## Live Smoke Test
 
@@ -138,6 +140,39 @@ Remaining hard-mode gap:
 - To claim full EDA validation, use a runtime image with Verilator, Icarus Verilog, and/or Yosys preinstalled.
 - To claim live model routing, rerun after confirming `switch_llm` is available to the automation agent and verify a `SwitchLLMObservation` event.
 
+## Focused Model Switch Proof
+
+Trigger:
+
+- Created GitHub issue #5 with `rtl-request`.
+- Added label `openhands-rtl-model-switch`.
+
+Result:
+
+- Automation run: `514bbe77-e3ec-48eb-b261-bd6f82b37646`
+- Status: `COMPLETED`
+- Conversation: `0efae351-89a8-495f-acd9-7cd58a848c09`
+- Conversation URL: https://app.replicated.rajistics.com/conversations/0efae351-89a8-495f-acd9-7cd58a848c09
+
+Structured event inspection:
+
+- Event count: `13`
+- Actual `switch_llm` action events: `0`
+- Actual `SwitchLLMObservation` events: `0`
+- Exposed tools in the conversation state: `terminal`, `file_editor`, `task_tracker`, `finish`, `think`, `invoke_skill`
+
+Interpretation:
+
+- The proof automation worked as a negative control: it confirmed this prompt-preset automation runtime does not currently expose `switch_llm` as a conversation tool.
+- Do not claim the ChipCraftX or SambaNova profiles were live-switched in this Rajistics automation runner.
+- It is still accurate to show that the profiles are configured and that the repo contains a routing policy. For a live switch claim, use a Canvas/SDK build with the model-router PRs wired into the conversation toolset, or change the automation implementation to an SDK/custom path that can select LLM config explicitly.
+
+Demo recommendation:
+
+- Main live proof: GitHub event -> OpenHands automation -> parent/child sidekick -> RTL build PR -> QA validation.
+- Routing talk track: "profiles and policy are configured; this runner currently lacks the model-switch tool, so today I am showing routing as architecture unless we use the router-enabled build."
+- Optional engineering follow-up: update the runner/toolset so prompt-preset automations expose `switch_llm`, then rerun issue #5 and look for `SwitchLLMObservation`.
+
 ## Secret Status
 
 Local source file:
@@ -195,6 +230,7 @@ Added/verified LLM profile setup:
 
 3. Model Router/meta-profile support
    - Current local Agent Canvas did not expose `/api/meta-profiles`.
+   - Rajistics prompt-preset automations also did not expose `switch_llm` in issue #5.
    - For a live router UI demo, use a build with OpenHands SDK PR #3744 and Agent Canvas PR #1395, or keep this part as lightweight config/policy narration.
 
 ## API Caveat

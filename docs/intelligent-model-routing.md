@@ -48,6 +48,22 @@ Even if the full router PRs are not available in the local runtime yet, show the
 
 The point is not that the classifier is complicated. The point is that OpenHands has a first-class place to encode routing policy.
 
+## Focused Switch Proof
+
+Use the `openhands-rtl-model-switch` label when the demo needs a clean proof separate from RTL generation.
+
+This automation asks the agent to do only three things:
+
+1. check whether `switch_llm` is available
+2. switch to `HF-ChipCraftX-RTLGen-7B`
+3. switch to `SambaNova-Llama-3.3-70B`
+
+After the run, inspect the conversation event log for `SwitchLLMObservation`. If the event is present, the demo can claim live model switching. If it is absent, keep the claim to saved profiles, routing policy, and the current runner limitation.
+
+Demo-safe language when the event is absent:
+
+> The profiles and routing policy are configured, but this runner did not expose the model-switch tool in the automation conversation. For today's demo, I will show routing as policy plus saved profiles, and use the GitHub automation, child conversations, and EDA validation as the live proof points.
+
 ## Demo Talk Track
 
 > A human should not have to manually decide which model is best for every step. OpenHands can encode a model routing policy, classify the current task, and switch to the right saved profile. That is especially valuable in foundry IT, where different steps have different latency, accuracy, cost, and data-boundary requirements.
@@ -61,4 +77,3 @@ Claude Code, Cursor, and Cline can use strong models interactively. The OpenHand
 - uses saved profiles and policy
 - can run inside local, cloud, or air-gapped deployments
 - keeps the workflow auditable
-
