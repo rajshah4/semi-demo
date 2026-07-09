@@ -177,6 +177,16 @@ Safe wording when the proof is absent:
 
 > The important product idea is model routing by policy. In this Rajistics prompt-preset runner, the model-switch tool is not exposed yet, so I am not going to pretend it switched live. I will show the configured profiles and policy, then use automation, child conversations, and EDA validation as the live proof.
 
+Operator fallback:
+
+```bash
+python3 scripts/mock_model_router.py
+```
+
+Say:
+
+> This is a transparent shim for the in-flight router PRs. It shows the route decision and the audit shape, but it is not a live `SwitchLLMObservation`.
+
 ### 6. Generate RTL With ChipCraftX
 
 Show: ChipCraftX profile or an OpenHands step calling the specialist.

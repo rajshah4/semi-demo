@@ -48,6 +48,20 @@ Even if the full router PRs are not available in the local runtime yet, show the
 
 The point is not that the classifier is complicated. The point is that OpenHands has a first-class place to encode routing policy.
 
+## Transparent Mock
+
+Until the router PRs are present in the running instance, use the local shim:
+
+```bash
+python3 scripts/mock_model_router.py
+```
+
+This prints a simulated route transcript with explicit markers such as `MOCK_ROUTE_DECISION` and `MOCK_SWITCHLLM_OBSERVATION simulated=true`. It is useful for rehearsing the buyer-facing product behavior without claiming native model switching.
+
+Use this wording:
+
+> This is a transparent mock of the router PR behavior. It shows the policy and the audit shape we want: classify the task, select the saved profile, record the route decision, then hand off to the right model/tool lane.
+
 ## Focused Switch Proof
 
 Use the `openhands-rtl-model-switch` label when the demo needs a clean proof separate from RTL generation.

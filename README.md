@@ -55,6 +55,7 @@ The strongest differentiators to show:
 - `docs/parent-child-conversations.md` - parent orchestrator and child conversation sidekick pattern
 - `docs/intelligent-model-routing.md` - how SDK/Canvas model-router PRs fit the demo
 - `docs/model-routing.md` - model roles and routing rules
+- `docs/model-router-shim.md` - transparent mock for the native model-router PR behavior
 - `docs/local-cloud-airgap.md` - deployment tradeoffs
 - `docs/toolchain-image.md` - what to pre-bake into an EDA image
 - `docs/automation-entrypoint.md` - webhook and polling automation starting points
@@ -75,6 +76,7 @@ The strongest differentiators to show:
 - `rtl/sync_fifo.sv` - intentionally incomplete hard-mode RTL workcell
 - `tb/sync_fifo_tb.sv` - FIFO testbench for the hard-mode workcell
 - `scripts/validate_rtl.sh` - validation harness using Verilator, Icarus, and Yosys when available
+- `scripts/mock_model_router.py` - transparent model-router shim for demo rehearsal
 - `scripts/simulate-event.sh` - local dry-run helper for the event payload
 
 ## Current Status
@@ -94,6 +96,7 @@ This is a scaffold, not yet the final runnable demo. Next work:
 
 ```bash
 python3 scripts/preflight_semi_demo.py
+python3 scripts/mock_model_router.py
 python3 scripts/register_github_automations.py --dry-run
 scripts/simulate-event.sh
 bash scripts/validate_rtl.sh

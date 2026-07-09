@@ -42,6 +42,16 @@ Product hook:
 
 > This maps directly to the OpenHands Model Router work: a meta-profile defines a classifier model, a default model, and task classes that map to saved LLM profiles. The agent can call `classify_and_switch_llm` to move the conversation to the right profile.
 
+If the running instance does not include the router PRs yet, show the transparent shim:
+
+```bash
+python3 scripts/mock_model_router.py
+```
+
+Say:
+
+> This is not pretending the live runner switched models. It is a mock of the router UX while the PRs are in flight: route classification, selected profile, and audit evidence.
+
 ### 3. Toolchain-Grounded Validation
 
 Run the actual checks:
