@@ -49,6 +49,18 @@ run_static_checks() {
     pass "static" "no starter TODO marker"
   fi
 
+  if grep -Eq 'intended|profile available|not needed' "$RTL_FILE"; then
+    fail "static" "RTL contains non-evidence model-routing claim"
+  else
+    pass "static" "no model-routing claim embedded in RTL"
+  fi
+
+  if rtl_without_line_comments | grep -Eq '\bDEPTH[[:space:]]*\['; then
+    fail "static" "parameter DEPTH is indexed like a vector"
+  else
+    pass "static" "no DEPTH vector indexing"
+  fi
+
   rtl_without_line_comments | grep -Eq 'always_ff|always[[:space:]]*@' \
     && pass "static" "sequential logic block found" \
     || fail "static" "no sequential logic block found"
