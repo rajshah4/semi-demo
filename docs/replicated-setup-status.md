@@ -82,6 +82,62 @@ The completed conversation produced the expected sidekick markers:
 - evidence/audit framing
 - SambaNova and ChipCraftX references
 
+## Hard-Mode Build And QA Dress Rehearsal
+
+Trigger:
+
+- Created GitHub issue #3 with `rtl-request`.
+- Added label `openhands-rtl-build`.
+
+Build result:
+
+- Automation run: `adc32b67-182f-45d9-ab02-2e6797a968df`
+- Status: `COMPLETED`
+- Conversation: `2cac15c3-7dae-47e8-bf85-d51238dd6a60`
+- Conversation URL: https://app.replicated.rajistics.com/conversations/2cac15c3-7dae-47e8-bf85-d51238dd6a60
+- Pull request: https://github.com/rajshah4/semi-demo/pull/4
+
+Build evidence:
+
+- OpenHands created branch `rtl/sync-fifo-implementation-issue-3`.
+- OpenHands replaced the starter `rtl/sync_fifo.sv` with a FIFO implementation.
+- Static validation passed with `bash scripts/validate_rtl.sh`.
+- The first generated RTL had two demo-quality issues:
+  - it embedded an "intended model" claim in source comments
+  - it indexed `DEPTH` like a vector
+- Follow-up commit `d25667d` tightened the RTL implementation.
+- Main branch commit `50c5763` tightened the build prompt so future runs cannot claim model use without `switch_llm` evidence.
+
+Model-routing caveat:
+
+- Saved profiles are present for `HF-ChipCraftX-RTLGen-7B` and `SambaNova-Llama-3.3-70B`.
+- The build conversation included profile names and `switch_llm` instructions, but inspection did not find a successful `SwitchLLMObservation`.
+- Treat this run as evidence for event-driven build automation plus validation, not as proof that the model-switch tool was exercised.
+
+QA trigger:
+
+- Added label `openhands-rtl-qa` to PR #4.
+
+QA result:
+
+- Automation run: `0911b45d-24d0-4415-b87e-aeb0a421b5fa`
+- Status: `COMPLETED`
+- Conversation: `270dd4bd-67ef-4f82-94c9-1c4fa4401b9d`
+- Conversation URL: https://app.replicated.rajistics.com/conversations/270dd4bd-67ef-4f82-94c9-1c4fa4401b9d
+- QA comment: https://github.com/rajshah4/semi-demo/pull/4#issuecomment-4920910356
+
+QA evidence:
+
+- Checked out PR branch commit `d25667d`.
+- Ran `bash scripts/validate_rtl.sh rtl/sync_fifo.sv tb/sync_fifo_tb.sv`.
+- Static checks passed.
+- Verilator, Icarus Verilog, and Yosys were not installed in the runtime, so EDA checks were skipped.
+
+Remaining hard-mode gap:
+
+- To claim full EDA validation, use a runtime image with Verilator, Icarus Verilog, and/or Yosys preinstalled.
+- To claim live model routing, rerun after confirming `switch_llm` is available to the automation agent and verify a `SwitchLLMObservation` event.
+
 ## Secret Status
 
 Local source file:
