@@ -17,6 +17,8 @@ REQUIRED_FILES = [
     "workflows/foundry-rtl-workflow.yaml",
     "workflows/foundry-rtl-sidekick-workflow.yaml",
     "events/new-rtl-block.json",
+    "rtl/sync_fifo.sv",
+    "tb/sync_fifo_tb.sv",
     "automation/foundry-rtl-request.prompt.md",
     "automation/preset-payload.example.json",
     "docs/demo-script.md",
@@ -33,6 +35,7 @@ REQUIRED_FILES = [
     "automations/github/openhands-rtl-sidekick/prompt.md",
     "automations/github/openhands-rtl-qa/prompt.md",
     "automations/github/openhands-rtl-review/prompt.md",
+    "scripts/validate_rtl.sh",
     "skills/foundry-sidekick-launcher/SKILL.md",
     "skills/foundry-context-sidekick/SKILL.md",
 ]

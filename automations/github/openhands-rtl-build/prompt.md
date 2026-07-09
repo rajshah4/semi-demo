@@ -10,11 +10,14 @@ Given a GitHub issue labeled `openhands-rtl-build`, generate or patch RTL and va
 
 1. Read repo memory and the issue context.
 2. Build a short implementation plan.
-3. Use ChipCraftX RTLGen 7B for first-pass Verilog/SystemVerilog generation when appropriate.
-4. Use Sonnet-style orchestration for file edits and final judgment.
-5. Use SambaNova Llama 3.3 70B for fast log triage and simple edit/test loops.
-6. Run available validation commands.
-7. Open or update a PR with evidence.
+3. Inspect `examples/rtl_spec/fifo_request.md`, `rtl/sync_fifo.sv`, `tb/sync_fifo_tb.sv`, and `scripts/validate_rtl.sh`.
+4. Call the `switch_llm` tool with `profile_name="HF-ChipCraftX-RTLGen-7B"` and a concise reason before first-pass Verilog/SystemVerilog generation or repair.
+5. Replace the starter RTL in `rtl/sync_fifo.sv` with synthesizable SystemVerilog for the requested synchronous FIFO.
+6. Return to the orchestrator/default profile if needed for repository edits and final judgment.
+7. Run `bash scripts/validate_rtl.sh` and capture the command output.
+8. If validation fails and the failure is a short log or straightforward syntax/test issue, call the `switch_llm` tool with `profile_name="SambaNova-Llama-3.3-70B"` and a concise reason before summarizing the log and proposing a small patch.
+9. Patch the RTL and rerun `bash scripts/validate_rtl.sh` until it passes or the remaining blocker is a missing EDA tool/runtime limitation.
+10. Open or update a PR with evidence.
 
 ## Completion
 
@@ -24,5 +27,5 @@ Post a summary with:
 - models used
 - validation commands
 - pass/fail status
+- whether validation was full EDA-backed or static-only because tools were missing
 - risks and next human decision
-
