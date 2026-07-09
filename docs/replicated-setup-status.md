@@ -108,10 +108,10 @@ Added/verified LLM profile setup:
 
 2. SambaNova LLM profile on Rajistics
    - The `SAMBANOVA_API_KEY` secret is now present.
-   - Attempted profile name: `SambaNova-Llama-3.3-70B`.
-   - Intended model: `sambanova/Meta-Llama-3.3-70B-Instruct`.
-   - The profile save returned `409` after the ChipCraftX profile brought the current profile list to 10 entries.
-   - Do not delete existing Bedrock/demo profiles blindly. For the live demo, either free one saved-profile slot or use the secret-backed helper path for SambaNova fast inference.
+   - Rajistics now has `SambaNova-Llama-3.3-70B`.
+   - Model: `openai/Meta-Llama-3.3-70B-Instruct`.
+   - Base URL: `https://api.sambanova.ai/v1`.
+   - Readback shows `api_key_set: true`; the stored key value was not printed.
 
 3. Model Router/meta-profile support
    - Current local Agent Canvas did not expose `/api/meta-profiles`.
