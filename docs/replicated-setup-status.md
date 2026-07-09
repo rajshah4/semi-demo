@@ -70,9 +70,8 @@ Presence check, values not printed:
 |---|---|---|
 | `OPENHANDS_API_KEY_ORG` | present | Register/list Rajistics automations |
 | `GITHUB_TOKEN` | present | Needed for custom launcher scripts that call GitHub directly |
-| `HF_API_KEY` | present | Can be used for ChipCraftX/Hugging Face calls |
-| `HF_TOKEN` | missing | Recommended alias for HF tooling and parity with local Canvas |
-| `SAMBANOVA_API_KEY` | missing | Needed if the demo calls SambaNova directly or creates a direct SambaNova profile |
+| `HF_TOKEN` | present | Hugging Face token for ChipCraftX/HF inference |
+| `SAMBANOVA_API_KEY` | present | SambaNova API key for fast inference |
 | `ANTHROPIC_API_KEY` | present | Available locally; Rajistics base LLM already worked for the smoke test |
 | `JIRA_API_TOKEN` | present | Jira direct workflow, not required for this GitHub smoke test |
 | `JIRA_API_BASE_URL` | present | Jira direct workflow |
@@ -94,21 +93,22 @@ Reuse from the existing Rajistics/SDLC setup:
 
 ## What To Add Or Recreate
 
-Add or verify in Rajistics before the full model-routed demo:
+Added in Rajistics via `/api/v1/secrets` on 2026-07-08:
 
-1. `HF_TOKEN`
-   - Local `.env` has `HF_API_KEY`, but `HF_TOKEN` is missing.
-   - Recommended: create `HF_TOKEN` as an alias to the same Hugging Face token, or update demo code to look for both `HF_TOKEN` and `HF_API_KEY`.
+- `HF_TOKEN`
+- `SAMBANOVA_API_KEY`
 
-2. `SAMBANOVA_API_KEY`
-   - Missing locally.
-   - Needed for direct SambaNova fast-inference calls or a saved SambaNova LLM profile unless Rajistics already has SambaNova configured through LiteLLM/admin config.
+Add or verify before the full model-routed demo:
 
-3. ChipCraftX profile on Rajistics
+1. ChipCraftX profile on Rajistics
    - Local Canvas has `HF-ChipCraftX-RTLGen-7B`.
    - Need equivalent Rajistics profile or helper tool before showing live ChipCraftX generation.
 
-4. Model Router/meta-profile support
+2. SambaNova LLM profile on Rajistics
+   - The `SAMBANOVA_API_KEY` secret is now present.
+   - Need a saved LLM profile or helper path before using SambaNova as a model-routed fast inference backend.
+
+3. Model Router/meta-profile support
    - Current local Agent Canvas did not expose `/api/meta-profiles`.
    - For a live router UI demo, use a build with OpenHands SDK PR #3744 and Agent Canvas PR #1395, or keep this part as lightweight config/policy narration.
 
@@ -127,4 +127,3 @@ X-Access-Token: <OPENHANDS_API_KEY_ORG>
 ```
 
 The frontend route `/api/conversations/...` returned HTML on Rajistics; use `/api/v1/...` app-server endpoints for conversation inspection.
-
