@@ -41,8 +41,10 @@ Have these ready:
 - Agent Canvas open
 - the ChipCraftX profile smoke-tested: `HF-ChipCraftX-RTLGen-7B`
 - SambaNova profile available or ready to describe
+- Jira-style request fixture open: `events/jira-rtl-request.json`
 - sample event: `events/new-rtl-block.json`
-- sidekick label visible: `openhands-rtl-sidekick`
+- parent label visible: `openhands-foundry-parent`
+- sidekick label visible as fallback: `openhands-rtl-sidekick`
 - routing example open: `configs/meta-profile.semi-foundry-router.example.json`
 
 Optional live links:
@@ -70,11 +72,11 @@ Contrast:
 
 ### 2. Show The Event Trigger
 
-Show: `events/new-rtl-block.json` or a GitHub issue labeled `rtl-request`.
+Show: `events/jira-rtl-request.json` or a Jira issue mirrored into a GitHub issue.
 
 Say:
 
-> The workflow starts from a system of record: a GitHub issue, Jira ticket, CI event, or internal design portal webhook. In foundry IT, this matters because work needs to be traceable and policy-controlled from the beginning.
+> The workflow starts from Jira, the system of record for the request. For today, the GitHub label is standing in for the Jira webhook so we can focus on the OpenHands workflow: classify, route, implement, validate, and open an auditable PR.
 
 Feature:
 
@@ -86,12 +88,12 @@ Operator action:
 
 ```bash
 cd ~/Code/semi-demo
-scripts/simulate-event.sh
+python3 scripts/mock_model_router.py --event events/jira-rtl-request.json
 ```
 
 ### 3. Launch The Parent Conversation
 
-Show: parent conversation or the `openhands-rtl-sidekick` automation prompt.
+Show: parent conversation or the `openhands-foundry-parent` automation prompt.
 
 Say:
 
@@ -110,7 +112,7 @@ Critical point:
 Expected visible marker:
 
 ```text
-DEMO_STEP 0: Foundry RTL Sidekick Launcher
+DEMO_STEP 0: Jira-to-RTL Parent Automation
 ```
 
 ### 4. Show Child Conversations

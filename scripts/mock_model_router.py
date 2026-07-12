@@ -61,8 +61,8 @@ def event_summary(event: dict[str, Any]) -> dict[str, str]:
     repository = event.get("repository") if isinstance(event.get("repository"), dict) else {}
     return {
         "repository": str(repository.get("full_name") or repository.get("name") or "unknown"),
-        "issue": str(issue.get("number") or "n/a"),
-        "title": str(issue.get("title") or event.get("title") or "unspecified"),
+        "issue": str(issue.get("number") or issue.get("key") or "n/a"),
+        "title": str(issue.get("title") or issue.get("summary") or event.get("title") or "unspecified"),
     }
 
 
@@ -85,7 +85,7 @@ def build_route(text: str, event: dict[str, Any], meta_profile: dict[str, Any]) 
     )
     private_model = find_profile(
         meta_profile,
-        r"\bSensitive\b|\bair-gapped\b|\bprivate\b",
+        r"\bSensitive IP\b|\bair-gapped\b|\bprivate foundry\b|\bmust stay\b|\blocal/private\b",
         "customer-private-model",
     )
 

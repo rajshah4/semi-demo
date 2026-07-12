@@ -14,6 +14,13 @@ ROOT = Path(__file__).resolve().parents[1]
 
 PACKAGES = [
     {
+        "slug": "openhands-foundry-parent",
+        "name": "Semi Demo Foundry Parent",
+        "path": "automations/github/openhands-foundry-parent/prompt.md",
+        "event": "issues.labeled",
+        "filter": "label.name == 'openhands-foundry-parent'",
+    },
+    {
         "slug": "openhands-rtl-context",
         "name": "Semi Demo RTL Context Scout",
         "path": "automations/github/openhands-rtl-context/prompt.md",

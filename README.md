@@ -56,6 +56,7 @@ The strongest differentiators to show:
 - `docs/intelligent-model-routing.md` - how SDK/Canvas model-router PRs fit the demo
 - `docs/model-routing.md` - model roles and routing rules
 - `docs/model-router-shim.md` - transparent mock for the native model-router PR behavior
+- `docs/jira-parent-automation.md` - Jira-start parent workflow and label strategy
 - `docs/local-cloud-airgap.md` - deployment tradeoffs
 - `docs/toolchain-image.md` - what to pre-bake into an EDA image
 - `docs/automation-entrypoint.md` - webhook and polling automation starting points
@@ -69,6 +70,7 @@ The strongest differentiators to show:
 - `workflows/foundry-rtl-workflow.yaml` - demo workflow definition
 - `workflows/foundry-rtl-sidekick-workflow.yaml` - visible parent/child conversation workflow
 - `events/new-rtl-block.json` - sample incoming event
+- `events/jira-rtl-request.json` - Jira-style design request fixture for the parent demo
 - `automation/foundry-rtl-request.prompt.md` - prompt preset draft for OpenHands Automation
 - `automations/github/openhands-rtl-sidekick/` - visible parent/child sidekick prompt package
 - `automation/preset-payload.example.json` - sample automation API payload, no secrets

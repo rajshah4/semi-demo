@@ -4,6 +4,7 @@ These prompt packages mirror the SDLC automation demo pattern and adapt it to fo
 
 ## Packages
 
+- `openhands-foundry-parent`: audience-facing Jira-to-RTL parent workflow
 - `openhands-rtl-context`: scout the issue/spec and post a routing/context report
 - `openhands-rtl-build`: generate or patch RTL and open/update implementation work
 - `openhands-rtl-qa`: run EDA validation and post evidence
@@ -12,6 +13,7 @@ These prompt packages mirror the SDLC automation demo pattern and adapt it to fo
 
 ## Trigger Labels
 
+- `openhands-foundry-parent`
 - `openhands-rtl-context`
 - `openhands-rtl-build`
 - `openhands-rtl-qa`
@@ -29,5 +31,5 @@ python3 scripts/register_github_automations.py --dry-run
 Register one package:
 
 ```bash
-python3 scripts/register_github_automations.py --apply --only openhands-rtl-model-switch
+python3 scripts/register_github_automations.py --apply --only openhands-foundry-parent
 ```

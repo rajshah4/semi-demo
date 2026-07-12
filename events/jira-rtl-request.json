@@ -1,0 +1,35 @@
+{
+  "source": "jira",
+  "event_key": "issue.created",
+  "issue": {
+    "key": "RTL-1024",
+    "summary": "Create a parameterized synchronous FIFO",
+    "type": "Design Request",
+    "status": "Open",
+    "priority": "Demo",
+    "project": {
+      "key": "RTL",
+      "name": "Foundry RTL Enablement"
+    },
+    "reporter": {
+      "displayName": "Foundry IT Demo User"
+    },
+    "labels": [
+      "rtl-request",
+      "systemverilog",
+      "openhands-foundry-parent"
+    ],
+    "description": "Create synthesizable SystemVerilog for a synchronous FIFO with WIDTH and DEPTH parameters. Include active-low reset behavior, write/read enables, full/empty flags, and validation evidence. Route RTL generation to the specialist model, summarize validation logs with fast inference, and keep sensitive design context inside the approved runtime."
+  },
+  "repository": {
+    "provider": "github",
+    "full_name": "rajshah4/semi-demo",
+    "branch": "main"
+  },
+  "acceptance_criteria": [
+    "RTL module compiles or passes static checks in the available runtime",
+    "Validation command output is captured",
+    "A pull request or implementation handoff is created",
+    "Human review gate is explicit"
+  ]
+}
