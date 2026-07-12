@@ -8,32 +8,17 @@ Start your visible work with this marker:
 DEMO_STEP 0: Jira-to-RTL Parent Automation
 ```
 
-## Demo Intent
-
-Show one clean enterprise workflow:
-
-1. a Jira design request starts the process
-2. OpenHands classifies the request
-3. OpenHands routes each step to the right model or tool lane
-4. OpenHands delegates implementation and QA to child agent conversations
-5. GitHub receives the code review artifact and audit trail
-
-This parent automation is the audience-facing entrypoint. The focused child automations exist to prove that OpenHands is an orchestrated agent system, not one agent tied to one model.
-
 ## Trigger Context
 
-This prompt can be used in two modes:
+This automation is triggered by the `jira-direct` webhook when a Jira `KAN` Task is created with the `rtl-request` label. Treat the Jira webhook payload as the system-of-record request.
 
-- Jira live mode: `jira-direct` webhook, Jira `KAN` Task, label `rtl-request`
-- GitHub fallback mode: GitHub issue labeled `openhands-foundry-parent`
-
-Treat the Jira payload as the system-of-record when present. If the payload is sparse or the trigger is the GitHub fallback, use `events/jira-rtl-request.json` as the canonical fixture.
+Use `events/jira-rtl-request.json` as the canonical fallback fixture if the live payload is sparse or missing fields.
 
 Target GitHub repo: `rajshah4/semi-demo`.
 
 ## Parent Responsibilities
 
-1. Read the live event payload first, then compare it with `events/jira-rtl-request.json` as needed.
+1. Read the Jira event payload first, then compare it with `events/jira-rtl-request.json` as the demo fixture.
 2. Summarize the Jira request as the system-of-record starting point.
 3. Run the transparent router shim:
 

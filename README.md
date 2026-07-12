@@ -20,15 +20,16 @@ Foundry IT teams need more than IDE autocomplete. They need controlled automatio
 
 ## Primary Demo
 
-**Webhook to validated RTL**
+**Jira to delegated RTL validation**
 
-1. A new RTL block request arrives from a webhook-like event.
-2. OpenHands starts an automation workflow.
-3. The orchestrator uses Sonnet for planning and task decomposition.
-4. The router calls SambaNova Llama 3.3 70B for fast general coding/log analysis.
-5. The router calls ChipCraftX RTLGen 7B for Verilog/RTL generation or repair.
-6. OpenHands runs EDA tools such as Verilator, Yosys, Verible, Icarus, or cocotb.
-7. The workflow patches failures, reruns validation, and produces an auditable summary.
+1. A Jira `KAN` Task arrives with label `rtl-request`.
+2. OpenHands starts the parent automation through the `jira-direct` webhook.
+3. The parent summarizes the request and shows the model route table.
+4. The parent delegates Child Agent 1 by creating or updating a GitHub implementation issue and applying `openhands-rtl-build`.
+5. The RTL child uses the ChipCraftX lane for Verilog/RTL generation or repair when model switching is available, then opens or updates a PR.
+6. The RTL child delegates Child Agent 2 by applying `openhands-rtl-qa` to the PR.
+7. The QA child runs EDA checks such as Verilator, Yosys, Verible, Icarus, or cocotb when available and uses the SambaNova lane for fast validation-log triage.
+8. The workflow returns auditable GitHub evidence and a human review gate.
 
 ## Competitive Positioning
 
@@ -63,7 +64,8 @@ The strongest differentiators to show:
 - `docs/replicated-setup-status.md` - GitHub/Rajistics registration and smoke-test status
 - `docs/inspiration.md` - outside references and demo ideas to mine later
 - `docs/repo-memory/` - durable agent memory and policy notes
-- `automations/github/` - label-triggered GitHub automation prompt packages
+- `automations/jira/` - Jira-start parent prompt package for `rtl-request`
+- `automations/github/` - label-triggered GitHub child and fallback automation prompt packages
 - `.github/` - issue template, PR template, and demo labels
 - `configs/model-routing.yaml` - concrete routing matrix
 - `configs/meta-profile.semi-foundry-router.example.json` - OpenHands Model Router meta-profile example
@@ -83,11 +85,9 @@ The strongest differentiators to show:
 
 ## Current Status
 
-This is a scaffold, not yet the final runnable demo. Next work:
+This is a runnable demo scaffold with a smoke-tested Jira parent and GitHub child-label handoff. Next work:
 
-- wire the event into a local OpenHands/Agent Canvas conversation
 - check whether the local runtime includes SDK PR #3744 and Canvas PR #1395
-- wire a parent/child conversation launcher modeled on `sdlc-sidekick-launcher`
 - add a helper tool that calls the ChipCraftX HF profile as an RTL specialist
 - add a SambaNova profile smoke test and timing run
 - choose the first EDA validation path, likely Verilator or Icarus first

@@ -1,13 +1,13 @@
 # GitHub Automation Packages
 
-These prompt packages mirror the SDLC automation demo pattern and adapt it to foundry/RTL workflows.
+These prompt packages mirror the SDLC automation demo pattern and adapt it to foundry/RTL workflows. The live Jira-start parent prompt lives in `../jira/rtl-request-parent/`.
 
 ## Packages
 
-- `openhands-foundry-parent`: audience-facing Jira-to-RTL parent workflow
+- `openhands-foundry-parent`: GitHub fallback for the audience-facing Jira-to-RTL parent workflow
 - `openhands-rtl-context`: scout the issue/spec and post a routing/context report
-- `openhands-rtl-build`: generate or patch RTL and open/update implementation work
-- `openhands-rtl-qa`: run EDA validation and post evidence
+- `openhands-rtl-build`: Child Agent 1, generate or patch RTL, open/update a PR, and hand off to QA
+- `openhands-rtl-qa`: Child Agent 2, run EDA validation and post evidence
 - `openhands-rtl-review`: review RTL diffs and test coverage
 - `openhands-rtl-model-switch`: run a tiny proof that checks whether `switch_llm` is available and produces direct switch evidence
 
