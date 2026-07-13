@@ -11,7 +11,10 @@ models:
     name: ChipCraftX RTLGen 7B
     role: Verilog/SystemVerilog generation and repair
     profile_hint: HF-ChipCraftX-RTLGen-7B
-    model: huggingface/featherless-ai/chipcraftx-io/chipcraftx-rtlgen-7b
+    model: chipcraftx-io/chipcraftx-rtlgen-7b
+    provider_model: chipcraftx-io/chipcraftx-rtlgen-7b:featherless-ai
+    inference_mode: hf-router-chat
+    hardwired_inference: scripts/chipcraftx_generate_rtl.py
   private_sensitive:
     name: Local or private model
     role: sensitive IP and air-gapped work
@@ -49,4 +52,3 @@ validation_tools:
     - cocotb
   synthesize:
     - yosys
-

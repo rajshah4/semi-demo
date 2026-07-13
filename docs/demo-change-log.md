@@ -61,6 +61,30 @@ Optional or fallback automations can remain disabled during the main demo:
 - RTL context scout:
   `2a5d7237-8112-4efe-94ba-fa9144bc3937`
 
+### Hardwired ChipCraftX Provider Call
+
+The RTL build child now has a real specialist-model path instead of only a
+configured/intended route:
+
+- Added `scripts/chipcraftx_generate_rtl.py`, a stdlib-only helper that reads
+  `HF_TOKEN`, calls the Hugging Face router chat endpoint, and persists
+  generated RTL plus metadata under `artifacts/chipcraftx/`.
+- Default specialist provider model:
+  `chipcraftx-io/chipcraftx-rtlgen-7b:featherless-ai`.
+- Local smoke test on 2026-07-13 succeeded with
+  `CHIPCRAFTX_STATUS=used`, mode `hf-router-chat`, and generated RTL SHA256
+  `0d71bf99064851247f7711831c6a9f65aae8797541d7ec3bdb1421af41963adb`.
+- Updated the RTL build automation prompt so the child agent runs the helper
+  before first-pass RTL generation and only claims ChipCraftX usage when the
+  helper returns direct evidence.
+- Added bounded retries and a 700-token first-draft cap for transient
+  hosted-inference errors so the demo is less sensitive to short provider
+  hiccups.
+
+Native `switch_llm` is still not available in the Rajistics automation
+runtime. For the demo, ChipCraftX evidence comes from the hardwired provider
+call and persisted artifact; native model switching remains a future upgrade.
+
 ### Latest Clean Proof Run
 
 Jira-start proof run from `KAN-81` after the parent routing-prompt cleanup:
@@ -127,8 +151,9 @@ The strongest story is now:
 ### Known Caveats
 
 - Native model switching is not yet available in the Rajistics automation
-  environment. The demo should describe ChipCraftX and SambaNova as configured
-  or intended lanes unless a real `SwitchLLMObservation` appears.
+  environment. ChipCraftX can now be described as used when the hardwired
+  provider helper succeeds; SambaNova and native switching should still be
+  described as configured or intended unless direct runtime evidence appears.
 - The router shim and `configs/model-routing.yaml` are internal evidence for
   the routing policy while SDK/Canvas routing support continues to land.
 - The parent conversation should not expose shim commands, setup notes, or

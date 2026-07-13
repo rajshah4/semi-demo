@@ -42,6 +42,7 @@ REQUIRED_FILES = [
     "automations/github/openhands-rtl-review/prompt.md",
     "automations/github/openhands-rtl-model-switch/prompt.md",
     "scripts/mock_model_router.py",
+    "scripts/chipcraftx_generate_rtl.py",
     "scripts/validate_rtl.sh",
     ".agents/skills/foundry-model-routing/SKILL.md",
     "skills/foundry-sidekick-launcher/SKILL.md",
@@ -83,6 +84,8 @@ def main() -> None:
 
     for path in ROOT.rglob("*"):
         if not path.is_file() or ".git" in path.parts:
+            continue
+        if "__pycache__" in path.parts or path.suffix == ".pyc":
             continue
         if path.suffix in {".png", ".gif", ".jpg", ".jpeg", ".pdf"}:
             continue

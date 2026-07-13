@@ -12,9 +12,10 @@ internal demo commands, router-shim invocation details, API payload plumbing, or
 prompt scaffolding unless the user explicitly asks for debugging detail.
 
 Say that OpenHands routes work to the appropriate model, agent, or tool lane.
-When native model-switch evidence is unavailable, describe a route as
-"intended", "configured", or "selected by policy"; do not say the specialist
-model was actually used.
+When native model-switch evidence is unavailable, a hardwired provider call can
+serve as specialist-model evidence only if it succeeds and leaves a durable
+artifact. Otherwise describe a route as "intended", "configured", or "selected
+by policy"; do not say the specialist model was actually used.
 
 ## Routing Policy
 
@@ -67,3 +68,19 @@ Use those files for internal consistency checks when needed, but do not put the
 command line or shim mechanics in the audience-facing final response. The final
 response should show the route decision, not the implementation detail behind
 the route decision.
+
+## Hardwired ChipCraftX Evidence
+
+Until native model switching is available in the automation runtime, the RTL
+build child should call `scripts/chipcraftx_generate_rtl.py` before first-pass
+RTL generation. A successful run produces:
+
+- `CHIPCRAFTX_STATUS=used`
+- provider model id `chipcraftx-io/chipcraftx-rtlgen-7b:featherless-ai`
+- inference mode `hf-router-chat`
+- `artifacts/chipcraftx/chipcraftx_metadata.json`
+- `artifacts/chipcraftx/chipcraftx_generated_rtl.sv`
+- a SHA256 hash for the generated RTL
+
+That is enough to say the ChipCraftX model was used. If the helper fails,
+report the failure and fall back without claiming ChipCraftX usage.
