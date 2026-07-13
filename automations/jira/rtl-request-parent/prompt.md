@@ -46,8 +46,9 @@ Target GitHub repo: `rajshah4/semi-demo`.
      `RTL request from <Jira key>: <summary>`.
    - Include the Jira key, Jira URL if available, request summary, acceptance
      criteria, selected route, expected child handoff, and human gate.
-   - Apply `openhands-rtl-build` to that issue. This label is the child-agent
-     trigger.
+   - Do not include `openhands-rtl-build` during issue creation. After the issue
+     exists, check its labels and apply `openhands-rtl-build` exactly once only
+     if it is missing. This label is the child-agent trigger.
 7. Do not wait for child conversations to finish. The parent should report the
    route selected, the GitHub issue delegated to, and the next expected label
    handoff.
