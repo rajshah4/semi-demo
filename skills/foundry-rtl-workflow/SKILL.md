@@ -42,5 +42,5 @@ python3 skills/foundry-rtl-workflow/scripts/chipcraftx_generate_rtl.py \
 ```
 
 Use the generated RTL as a first draft only. The orchestrator still owns code
-review, integration into `rtl/sync_fifo.sv`, validation, PR evidence, and
-human-review framing.
+review, integration into `examples/sync_fifo/sync_fifo.sv`, validation, PR
+evidence, and human-review framing.

@@ -13,9 +13,9 @@ until validation evidence is captured.
 
 ## Skill-Owned Scripts
 
-- `scripts/validate_rtl.sh`: validates `rtl/sync_fifo.sv` and
-  `tb/sync_fifo_tb.sv` by default, then runs Verilator, Icarus Verilog, and
-  Yosys when those tools are installed.
+- `scripts/validate_rtl.sh`: validates the `examples/sync_fifo/` starter RTL
+  and testbench by default, then runs Verilator, Icarus Verilog, and Yosys when
+  those tools are installed.
 
 Run it from the repository root:
 
@@ -26,7 +26,7 @@ bash skills/foundry-eda-validation/scripts/validate_rtl.sh
 For explicit files:
 
 ```bash
-bash skills/foundry-eda-validation/scripts/validate_rtl.sh rtl/sync_fifo.sv tb/sync_fifo_tb.sv
+bash skills/foundry-eda-validation/scripts/validate_rtl.sh examples/sync_fifo/sync_fifo.sv examples/sync_fifo/sync_fifo_tb.sv
 ```
 
 ## Reporting

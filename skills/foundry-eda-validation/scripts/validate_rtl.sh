@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -u
 
-RTL_FILE="${1:-rtl/sync_fifo.sv}"
-TB_FILE="${2:-tb/sync_fifo_tb.sv}"
+RTL_FILE="${1:-examples/sync_fifo/sync_fifo.sv}"
+TB_FILE="${2:-examples/sync_fifo/sync_fifo_tb.sv}"
 STATUS=0
 RAN_EDA=0
 

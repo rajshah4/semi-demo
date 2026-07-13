@@ -253,8 +253,8 @@ def write_json(path: Path, data: dict[str, Any]) -> None:
 def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Generate RTL with ChipCraftX via Hugging Face.")
     parser.add_argument("--summary", required=True, help="Short RTL request summary.")
-    parser.add_argument("--spec-file", type=Path, default=Path("examples/rtl_spec/fifo_request.md"))
-    parser.add_argument("--starter-rtl", type=Path, default=Path("rtl/sync_fifo.sv"))
+    parser.add_argument("--spec-file", type=Path, default=Path("examples/sync_fifo/fifo_request.md"))
+    parser.add_argument("--starter-rtl", type=Path, default=Path("examples/sync_fifo/sync_fifo.sv"))
     parser.add_argument("--output-dir", type=Path, default=Path("artifacts/chipcraftx"))
     parser.add_argument("--model", default=os.getenv("CHIPCRAFTX_HF_MODEL", DEFAULT_MODEL))
     parser.add_argument(

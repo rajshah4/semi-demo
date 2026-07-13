@@ -10,8 +10,9 @@ Given a GitHub issue labeled `openhands-rtl-build`, generate or patch RTL and va
 
 1. Read repo memory and the issue context.
 2. Build a short implementation plan.
-3. Inspect `examples/rtl_spec/fifo_request.md`, `rtl/sync_fifo.sv`,
-   `tb/sync_fifo_tb.sv`, and
+3. Inspect `examples/sync_fifo/fifo_request.md`,
+   `examples/sync_fifo/sync_fifo.sv`,
+   `examples/sync_fifo/sync_fifo_tb.sv`, and
    `skills/foundry-eda-validation/scripts/validate_rtl.sh`.
 4. Hardwire the ChipCraftX specialist call before first-pass RTL generation:
 
@@ -30,7 +31,8 @@ Given a GitHub issue labeled `openhands-rtl-build`, generate or patch RTL and va
    - `artifacts/chipcraftx/chipcraftx_generated_rtl.sv`
 5. If the ChipCraftX helper succeeds with `CHIPCRAFTX_STATUS=used`, use
    `artifacts/chipcraftx/chipcraftx_generated_rtl.sv` as the first RTL draft,
-   then review, repair, and integrate it into `rtl/sync_fifo.sv`.
+   then review, repair, and integrate it into
+   `examples/sync_fifo/sync_fifo.sv`.
 6. If the ChipCraftX helper fails or `HF_TOKEN` is unavailable, continue with
    the orchestrator model but state the exact failure in the model evidence
    section. Do not claim ChipCraftX was used.
@@ -38,7 +40,7 @@ Given a GitHub issue labeled `openhands-rtl-build`, generate or patch RTL and va
    `profile_name="HF-ChipCraftX-RTLGen-7B"` if it is available. This is
    secondary evidence; the hardwired HF inference artifact is the primary
    specialist-model evidence for this workflow.
-8. Replace the starter RTL in `rtl/sync_fifo.sv` with synthesizable
+8. Replace the starter RTL in `examples/sync_fifo/sync_fifo.sv` with synthesizable
    SystemVerilog for the requested synchronous FIFO.
 9. Return to the orchestrator/default profile if needed for repository edits
    and final judgment.

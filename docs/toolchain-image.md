@@ -38,7 +38,7 @@ Verification command inside a fresh conversation:
 
 ```bash
 which verilator iverilog yosys
-bash skills/foundry-eda-validation/scripts/validate_rtl.sh rtl/sync_fifo.sv tb/sync_fifo_tb.sv
+bash skills/foundry-eda-validation/scripts/validate_rtl.sh examples/sync_fifo/sync_fifo.sv examples/sync_fifo/sync_fifo_tb.sv
 ```
 
 The local custom-image examples currently live under:

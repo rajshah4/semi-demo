@@ -1,4 +1,4 @@
-// Starter RTL for the OpenHands semiconductor work cell.
+// Starter RTL for the OpenHands sync FIFO example work cell.
 //
 // This file is intentionally incomplete. The `openhands-rtl-build` automation
 // should replace it with a synthesizable FIFO implementation, ideally after

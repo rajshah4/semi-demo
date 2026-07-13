@@ -70,9 +70,7 @@ specialist model directly and persist evidence when hosted inference succeeds.
 - `skills/foundry-context-sidekick/` - read-only context scouting instructions.
 - `configs/model-routing.yaml` - concrete model and tool routing matrix.
 - `configs/meta-profile.semi-foundry-router.example.json` - example model-router profile.
-- `examples/rtl_spec/fifo_request.md` - sample RTL request.
-- `rtl/sync_fifo.sv` - intentionally incomplete RTL work cell.
-- `tb/sync_fifo_tb.sv` - FIFO testbench.
+- `examples/sync_fifo/` - sample request, starter RTL, and testbench work cell.
 - `docs/` - architecture, model routing, deployment, toolchain, and automation guides.
 - `.github/` - issue template, PR template, and label definitions.
 

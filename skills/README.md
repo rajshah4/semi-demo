@@ -12,4 +12,4 @@ together. Agents should prefer these skill instructions over ad hoc commands.
 | `foundry-sidekick-launcher` | Parent/child conversation shape | none |
 
 Run skill scripts from the repository root so their default paths resolve to
-`configs/`, `events/`, `examples/`, `rtl/`, and `tb/`.
+`configs/`, `events/`, and `examples/`.

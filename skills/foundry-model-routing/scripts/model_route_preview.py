@@ -18,7 +18,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_EVENT = ROOT / "events" / "new-rtl-block.json"
-DEFAULT_TASK = ROOT / "examples" / "rtl_spec" / "fifo_request.md"
+DEFAULT_TASK = ROOT / "examples" / "sync_fifo" / "fifo_request.md"
 DEFAULT_META_PROFILE = ROOT / "configs" / "meta-profile.semi-foundry-router.example.json"
 
 
