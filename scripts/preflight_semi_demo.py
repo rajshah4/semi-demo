@@ -27,6 +27,7 @@ REQUIRED_FILES = [
     "docs/work-cells.md",
     "docs/parent-child-conversations.md",
     "docs/intelligent-model-routing.md",
+    "docs/demo-change-log.md",
     "docs/model-router-shim.md",
     "docs/jira-parent-automation.md",
     "docs/replicated-setup-status.md",
