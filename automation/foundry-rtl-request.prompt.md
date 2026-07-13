@@ -8,10 +8,8 @@ An event payload describes a new RTL design request. Your job is to turn the req
 
 1. Read the event payload.
 2. Normalize the hardware requirements into a short implementation spec.
-3. Use intelligent model routing:
-   - use Sonnet-style orchestration for planning and final review
-   - use SambaNova Llama 3.3 70B for fast log triage and simple patch loops
-   - use ChipCraftX RTLGen 7B for Verilog/SystemVerilog generation and repair
+3. Use the repo-local `foundry-model-routing` guidance to route each task to
+   the appropriate model, tool, or child-agent lane.
 4. Generate the RTL implementation.
 5. Generate or update the testbench.
 6. Run available EDA validation tools.
@@ -21,6 +19,9 @@ An event payload describes a new RTL design request. Your job is to turn the req
 ## Required Demo Framing
 
 Emphasize that OpenHands is not a single-model IDE assistant. OpenHands is an event-driven engineering automation runtime that can route work across models, tools, and deployment environments.
+
+Keep internal router-shim commands and setup details out of the audience-facing
+summary. Report the route decision and evidence, not the prompt mechanics.
 
 ## Validation Preference
 
@@ -43,4 +44,3 @@ Finish with:
 - pass/fail result
 - model-routing summary
 - local/cloud/air-gap note
-

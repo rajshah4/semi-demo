@@ -42,6 +42,7 @@ REQUIRED_FILES = [
     "automations/github/openhands-rtl-model-switch/prompt.md",
     "scripts/mock_model_router.py",
     "scripts/validate_rtl.sh",
+    ".agents/skills/foundry-model-routing/SKILL.md",
     "skills/foundry-sidekick-launcher/SKILL.md",
     "skills/foundry-context-sidekick/SKILL.md",
 ]

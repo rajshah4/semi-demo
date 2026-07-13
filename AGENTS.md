@@ -18,8 +18,9 @@ OpenHands is a programmable, event-driven engineering automation runtime with in
 ## Preferred Workflow
 
 1. Read `docs/repo-memory/`.
-2. Identify the active work cell.
-3. Route models according to `configs/model-routing.yaml`.
-4. Run the lightest deterministic validation that proves progress.
-5. Summarize results in the system of record.
-
+2. Use `.agents/skills/foundry-model-routing/SKILL.md` for audience-safe
+   routing decisions.
+3. Identify the active work cell.
+4. Route models according to `configs/model-routing.yaml`.
+5. Run the lightest deterministic validation that proves progress.
+6. Summarize results in the system of record.
