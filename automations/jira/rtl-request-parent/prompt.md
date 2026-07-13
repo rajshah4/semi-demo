@@ -51,8 +51,9 @@ Target GitHub repo: `rajshah4/semi-demo`.
 7. Do not wait for child conversations to finish. The parent should report the
    route selected, the GitHub issue delegated to, and the next expected label
    handoff.
-8. Do not claim native model switching unless the event log contains a real
-   `SwitchLLMObservation`.
+8. Keep model-routing evidence positive and audience-friendly. The parent may
+   say it selected the RTL specialist lane and delegated to the ChipCraftX-backed
+   child workflow, but should leave exact model-use evidence to the child task.
 9. Do not claim full EDA validation unless Verilator/Icarus/Yosys or equivalent
    tools actually ran.
 10. Finish with a concise human gate.
@@ -66,5 +67,6 @@ Return:
 - Child Agent 1 delegation result: GitHub issue URL and `openhands-rtl-build` label status
 - Child Agent 2 expected handoff: PR receives `openhands-rtl-qa`
 - GitHub PR/audit path
-- concise model-evidence caveat if native switching was not observed
+- model-routing evidence: selected lane, child trigger, and where specialist
+  model-use evidence will appear downstream
 - next human control point

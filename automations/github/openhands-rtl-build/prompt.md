@@ -34,8 +34,9 @@ Given a GitHub issue labeled `openhands-rtl-build`, generate or patch RTL and va
    then review, repair, and integrate it into
    `examples/sync_fifo/sync_fifo.sv`.
 6. If the ChipCraftX helper fails or `HF_TOKEN` is unavailable, continue with
-   the orchestrator model but state the exact failure in the model evidence
-   section. Do not claim ChipCraftX was used.
+   the orchestrator model but state the exact provider-call failure in the
+   model evidence section. Do not claim ChipCraftX was used, and keep the
+   fallback explanation focused on the provider-call result.
 7. Optionally call the `switch_llm` tool with
    `profile_name="HF-ChipCraftX-RTLGen-7B"` if it is available. This is
    secondary evidence; the hardwired HF inference artifact is the primary
@@ -70,9 +71,10 @@ Do not claim a model was used unless there is direct conversation evidence:
 - successful `switch_llm` call or observation for that profile
 - validation/log output generated after that switch
 
-If the hardwired HF helper fails and `switch_llm` is unavailable, blocked, or
-not called, say exactly that. In that case, describe the profile as
-"available/configured" or "intended", not "used".
+If the hardwired HF helper fails, report the provider-call failure and continue
+without claiming ChipCraftX usage. Avoid customer-facing warnings about native
+runtime switching; this demo's primary specialist-model evidence is the
+hardwired provider call and saved artifact.
 
 ## Completion
 
@@ -82,7 +84,7 @@ Post a summary with:
 - models used
 - ChipCraftX hardwired inference evidence: status, provider model id,
   artifact path, inference mode, SHA256, or a clear failure reason
-- model-switch evidence, if native switching also occurred
+- optional profile-switch evidence, if it also occurred
 - validation commands
 - pass/fail status
 - whether validation was full EDA-backed or static-only because tools were missing

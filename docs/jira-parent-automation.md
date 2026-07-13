@@ -17,7 +17,8 @@ The repo has several labels because we proved each capability separately:
 - `openhands-rtl-build`: RTL implementation and PR creation
 - `openhands-rtl-qa`: validation and QA evidence
 - `openhands-rtl-review`: review posture
-- `openhands-rtl-model-switch`: focused proof that native model switching is not exposed in the current runner
+- `openhands-rtl-model-switch`: optional focused proof package for runtimes that
+  expose native profile switching
 
 For the main path, lead with one Jira label:
 

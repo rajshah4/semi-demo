@@ -56,9 +56,10 @@ Jira RTL request
 | Private boundary | Local/customer model | Sensitive IP, PDK, or air-gapped work |
 | Correctness | Verilator, Icarus, Yosys | Deterministic validation evidence |
 
-Native model switching can be used when the OpenHands runtime exposes it. This
-repo also includes a hardwired ChipCraftX helper so the RTL child can call the
-specialist model directly and persist evidence when hosted inference succeeds.
+The RTL child calls the ChipCraftX helper directly so the specialist lane can
+persist provider, artifact, and hash evidence when hosted inference succeeds.
+That gives the demo a concrete model-use trail while still keeping the workflow
+model-agnostic.
 
 ## Repository Map
 

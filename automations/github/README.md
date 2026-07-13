@@ -11,7 +11,7 @@ Foundry IT workflow. The Jira-start parent prompt lives in
 - `openhands-rtl-build`: RTL specialist child that calls ChipCraftX, patches RTL, opens or updates a PR, and hands off to QA.
 - `openhands-rtl-qa`: EDA validation child that posts deterministic evidence.
 - `openhands-rtl-review`: RTL diff and validation-evidence reviewer.
-- `openhands-rtl-model-switch`: focused proof package for runtimes that expose native model switching.
+- `openhands-rtl-model-switch`: optional focused proof package for runtimes that expose native profile switching.
 
 ## Trigger Labels
 

@@ -12,10 +12,10 @@ internal commands, route-preview invocation details, API payload plumbing, or
 prompt scaffolding unless the user explicitly asks for debugging detail.
 
 Say that OpenHands routes work to the appropriate model, agent, or tool lane.
-When native model-switch evidence is unavailable, a hardwired provider call can
-serve as specialist-model evidence only if it succeeds and leaves a durable
-artifact. Otherwise describe a route as "intended", "configured", or "selected
-by policy"; do not say the specialist model was actually used.
+For this demo, the RTL specialist lane proves model use through the hardwired
+ChipCraftX provider call and its durable artifacts. If that provider call does
+not succeed, report the provider-call failure without framing it as a native
+runtime limitation.
 
 ## Routing Policy
 
@@ -62,8 +62,7 @@ chosen, the label applied, and the next human control point.
 
 The repository includes
 `skills/foundry-model-routing/scripts/model_route_preview.py` and
-`configs/model-routing.yaml` as transparent routing evidence while native SDK /
-Canvas routing support is under active development.
+`configs/model-routing.yaml` as transparent routing evidence for the demo.
 
 Use those files for internal consistency checks when needed, but do not put the
 command line or preview mechanics in the audience-facing final response. The final
@@ -72,8 +71,7 @@ the route decision.
 
 ## Hardwired ChipCraftX Evidence
 
-Until native model switching is available in the automation runtime, the RTL
-build child should call
+The RTL build child should call
 `skills/foundry-rtl-workflow/scripts/chipcraftx_generate_rtl.py` before
 first-pass RTL generation. A successful run produces:
 

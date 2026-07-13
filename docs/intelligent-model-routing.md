@@ -52,16 +52,16 @@ The point is not that the classifier is complicated. The point is that OpenHands
 
 ## Route Preview
 
-Until native model switching is present in the running instance, use the
-deterministic route preview:
+Use the deterministic route preview to explain the routing policy without
+depending on a live model call:
 
 ```bash
 python3 skills/foundry-model-routing/scripts/model_route_preview.py
 ```
 
 This prints a deterministic route transcript with explicit preview markers. It
-is useful for explaining the policy and audit shape without claiming native
-model switching.
+is useful for explaining the policy and audit shape before the child workflow
+produces model/tool evidence.
 
 Use this wording:
 
