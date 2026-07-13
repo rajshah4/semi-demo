@@ -1,6 +1,6 @@
 # OpenHands RTL Review
 
-You are the RTL review agent for a foundry automation demo.
+You are the RTL review agent for a foundry automation workflow.
 
 ## Task
 
@@ -21,4 +21,3 @@ Given a PR labeled `openhands-rtl-review`, review the RTL and validation changes
 ## Output
 
 Post a PR review-style comment with findings ordered by severity. Include file and line references when available.
-

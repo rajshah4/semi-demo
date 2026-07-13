@@ -1,6 +1,8 @@
 # Work Cells
 
-This demo borrows the work-cell pattern from `rajshah4/sdlc-automation-github-demo` and adapts it to semiconductor/foundry IT.
+This reference workflow borrows the work-cell pattern from
+`rajshah4/sdlc-automation-github-demo` and adapts it to semiconductor/foundry
+IT.
 
 ## Why Work Cells
 
@@ -22,7 +24,7 @@ Claude Code, Cursor, and Cline can help an individual developer inside an editor
 
 > Human-approved events launch repeatable engineering workflows with model routing, toolchain validation, and auditable outputs.
 
-## Demo Label Flow
+## Label Flow
 
 1. Create a Jira `KAN` Task with label `rtl-request`.
 2. Parent conversation summarizes the Jira request and shows the model route table.
@@ -32,4 +34,5 @@ Claude Code, Cursor, and Cline can help an individual developer inside an editor
 6. Child Agent 2 runs EDA validation and posts evidence.
 7. Human reviews the PR, validation evidence, and any remaining model/tooling caveats.
 
-For a shorter live demo, combine build, QA, and review into one workflow and show the work cells as the production pattern.
+For a shorter live walkthrough, combine build, QA, and review into one workflow
+and show the work cells as the production pattern.

@@ -1,13 +1,14 @@
 ---
 name: foundry-sidekick-launcher
-description: Launch or describe the visible parent/child conversation demo for foundry RTL workflows. Use when an OpenHands automation receives an RTL request and needs a parent orchestrator plus read-only child scout conversations before implementation.
+description: Launch or describe the visible parent/child conversation workflow for foundry RTL requests. Use when an OpenHands automation receives an RTL request and needs a parent orchestrator plus read-only child scout conversations before implementation.
 ---
 
 # Foundry Sidekick Launcher
 
 ## Overview
 
-Use this skill for the visible parent/child conversation version of the semiconductor demo.
+Use this skill for the visible parent/child conversation version of the
+semiconductor workflow.
 
 The launcher conversation should unwrap the event, start or describe child conversations, and print a conversation index. It should not implement RTL changes itself.
 
@@ -19,7 +20,7 @@ Begin the visible response with:
 DEMO_STEP 0: Foundry RTL Sidekick Launcher
 ```
 
-## Expected Demo Shape
+## Expected Workflow Shape
 
 - Step 0: parent launcher unwraps the event and prints the index.
 - Step 2A: spec scout normalizes requirements and ambiguity.
@@ -47,4 +48,3 @@ Print a compact conversation index:
 - `model_route`
 - `validation_plan`
 - `human_gate`
-

@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-"""Transparent model-router shim for the semi demo.
+"""Preview route-policy decisions for the Foundry IT workflow.
 
-This script is intentionally a mock. It does not call external models and does
-not prove native OpenHands model switching. It renders the route decisions and
-simulated switch observations that the native model-router PR flow is expected
-to make visible.
+This script is intentionally deterministic. It does not call external models
+and does not prove native OpenHands model switching. It renders route decisions
+from the repo policy so an operator can preview the intended lanes.
 """
 
 from __future__ import annotations
@@ -17,7 +16,7 @@ from pathlib import Path
 from typing import Any
 
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_EVENT = ROOT / "events" / "new-rtl-block.json"
 DEFAULT_TASK = ROOT / "examples" / "rtl_spec" / "fifo_request.md"
 DEFAULT_META_PROFILE = ROOT / "configs" / "meta-profile.semi-foundry-router.example.json"
@@ -110,14 +109,14 @@ def build_route(text: str, event: dict[str, Any], meta_profile: dict[str, Any]) 
             task="classify_event",
             selected=classifier,
             reason="Use the classifier profile to map the incoming event to task classes.",
-            simulated_observation=f"MOCK_ROUTE_DECISION classifier={classifier} native=false",
+            simulated_observation=f"ROUTE_PREVIEW classifier={classifier} native_switch=false",
         ),
         RouteDecision(
             step=2,
             task="orchestrate_plan",
             selected=default_model,
             reason="Use the default orchestration model for planning, decomposition, and human gates.",
-            simulated_observation=f"MOCK_SWITCHLLM_OBSERVATION simulated=true to={default_model}",
+            simulated_observation=f"ROUTE_PREVIEW selected={default_model} native_switch=false",
         ),
     ]
 
@@ -128,7 +127,7 @@ def build_route(text: str, event: dict[str, Any], meta_profile: dict[str, Any]) 
                 task="respect_data_boundary",
                 selected=private_model,
                 reason="Sensitive or air-gapped terms require the approved local/private profile.",
-                simulated_observation=f"MOCK_SWITCHLLM_OBSERVATION simulated=true to={private_model}",
+                simulated_observation=f"ROUTE_PREVIEW selected={private_model} native_switch=false",
             )
         )
 
@@ -139,7 +138,7 @@ def build_route(text: str, event: dict[str, Any], meta_profile: dict[str, Any]) 
                 task="generate_or_repair_rtl",
                 selected=rtl_model,
                 reason="Hardware-design terms route first-pass RTL generation or repair to the RTL specialist.",
-                simulated_observation=f"MOCK_SWITCHLLM_OBSERVATION simulated=true to={rtl_model}",
+                simulated_observation=f"ROUTE_PREVIEW selected={rtl_model} native_switch=false",
             )
         )
 
@@ -150,7 +149,7 @@ def build_route(text: str, event: dict[str, Any], meta_profile: dict[str, Any]) 
                 task="validate_with_eda_tools",
                 selected="EDA_TOOLCHAIN",
                 reason="Correctness should be grounded in Verilator/Icarus/Yosys/Verible results, not model confidence.",
-                simulated_observation="MOCK_TOOL_ROUTE simulated=true to=EDA_TOOLCHAIN",
+                simulated_observation="ROUTE_PREVIEW selected=EDA_TOOLCHAIN tool_route=true",
             )
         )
 
@@ -161,7 +160,7 @@ def build_route(text: str, event: dict[str, Any], meta_profile: dict[str, Any]) 
                 task="triage_short_failure_log",
                 selected=fast_model,
                 reason="Use fast inference for short validation logs and repeated edit/test loops.",
-                simulated_observation=f"MOCK_SWITCHLLM_OBSERVATION simulated=true to={fast_model}",
+                simulated_observation=f"ROUTE_PREVIEW selected={fast_model} native_switch=false",
             )
         )
 
@@ -171,7 +170,7 @@ def build_route(text: str, event: dict[str, Any], meta_profile: dict[str, Any]) 
             task="final_review_and_audit",
             selected=default_model,
             reason="Return to the orchestrator for final judgment, summary, and risk framing.",
-            simulated_observation=f"MOCK_SWITCHLLM_OBSERVATION simulated=true to={default_model}",
+            simulated_observation=f"ROUTE_PREVIEW selected={default_model} native_switch=false",
         )
     )
     return decisions
@@ -179,8 +178,8 @@ def build_route(text: str, event: dict[str, Any], meta_profile: dict[str, Any]) 
 
 def render_text(summary: dict[str, str], decisions: list[RouteDecision]) -> str:
     lines = [
-        "MODEL_ROUTER_SHIM_START",
-        "Native router status: simulated. No live model switch is claimed.",
+        "MODEL_ROUTE_PREVIEW_START",
+        "Native router status: preview only. No live model switch is claimed.",
         f"Repository: {summary['repository']}",
         f"Issue: {summary['issue']}",
         f"Title: {summary['title']}",
@@ -199,16 +198,16 @@ def render_text(summary: dict[str, str], decisions: list[RouteDecision]) -> str:
     lines.extend(
         [
             "",
-            "Demo wording:",
-            "This is a transparent shim for the model-router PR behavior. The current runner did not expose native switch_llm, so this transcript shows the intended route policy without claiming a live SwitchLLMObservation.",
-            "MODEL_ROUTER_SHIM_END",
+            "Safe wording:",
+            "This is a deterministic route-policy preview. It shows the intended route without claiming a live SwitchLLMObservation.",
+            "MODEL_ROUTE_PREVIEW_END",
         ]
     )
     return "\n".join(lines)
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Render a transparent model-router mock transcript.")
+    parser = argparse.ArgumentParser(description="Render a transparent model-route preview.")
     parser.add_argument("--event", type=Path, default=DEFAULT_EVENT, help="GitHub/Jira-like event JSON")
     parser.add_argument(
         "--input-file",

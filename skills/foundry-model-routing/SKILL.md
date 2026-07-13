@@ -1,6 +1,6 @@
 ---
 name: foundry-model-routing
-description: Use for Foundry IT demo requests that need model/tool routing, child automation handoff, air-gapped handling, RTL implementation, or EDA validation policy.
+description: Use for Foundry IT requests that need model/tool routing, child automation handoff, air-gapped handling, RTL implementation, or EDA validation policy.
 ---
 
 # Foundry Model Routing
@@ -8,7 +8,7 @@ description: Use for Foundry IT demo requests that need model/tool routing, chil
 ## Audience Rule
 
 Keep the visible conversation focused on the engineering workflow. Do not expose
-internal demo commands, router-shim invocation details, API payload plumbing, or
+internal commands, route-preview invocation details, API payload plumbing, or
 prompt scaffolding unless the user explicitly asks for debugging detail.
 
 Say that OpenHands routes work to the appropriate model, agent, or tool lane.
@@ -60,20 +60,22 @@ chosen, the label applied, and the next human control point.
 
 ## Internal Evidence
 
-The repository includes `scripts/mock_model_router.py` and
+The repository includes
+`skills/foundry-model-routing/scripts/model_route_preview.py` and
 `configs/model-routing.yaml` as transparent routing evidence while native SDK /
 Canvas routing support is under active development.
 
 Use those files for internal consistency checks when needed, but do not put the
-command line or shim mechanics in the audience-facing final response. The final
+command line or preview mechanics in the audience-facing final response. The final
 response should show the route decision, not the implementation detail behind
 the route decision.
 
 ## Hardwired ChipCraftX Evidence
 
 Until native model switching is available in the automation runtime, the RTL
-build child should call `scripts/chipcraftx_generate_rtl.py` before first-pass
-RTL generation. A successful run produces:
+build child should call
+`skills/foundry-rtl-workflow/scripts/chipcraftx_generate_rtl.py` before
+first-pass RTL generation. A successful run produces:
 
 - `CHIPCRAFTX_STATUS=used`
 - provider model id `chipcraftx-io/chipcraftx-rtlgen-7b:featherless-ai`

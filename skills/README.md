@@ -1,10 +1,15 @@
 # Repo-Local Skills
 
-Future repo-local OpenHands skills should live here.
+These skills keep reusable workflow behavior and skill-owned scripts close
+together. Agents should prefer these skill instructions over ad hoc commands.
 
-Initial candidates:
+| Skill | Owns | Key scripts |
+| --- | --- | --- |
+| `foundry-model-routing` | Model-route policy, evidence rules, and route previews | `scripts/model_route_preview.py` |
+| `foundry-rtl-workflow` | RTL implementation flow and ChipCraftX specialist calls | `scripts/chipcraftx_generate_rtl.py` |
+| `foundry-eda-validation` | Static checks and optional EDA-backed validation | `scripts/validate_rtl.sh` |
+| `foundry-context-sidekick` | Read-only request/repo/toolchain scouting | none |
+| `foundry-sidekick-launcher` | Parent/child conversation shape | none |
 
-- `foundry-rtl-workflow`: instructions for model routing, ChipCraftX calls, and EDA validation
-- `.agents/skills/foundry-model-routing`: loaded automation routing policy for the Jira parent and GitHub fallback parent
-- `eda-validation`: scripts and references for Verilator, Yosys, Verible, Icarus, and cocotb
-- `foundry-demo-review`: RTL review checklist and demo-safe escalation rules
+Run skill scripts from the repository root so their default paths resolve to
+`configs/`, `events/`, `examples/`, `rtl/`, and `tb/`.

@@ -1,6 +1,6 @@
 ---
 name: foundry-context-sidekick
-description: Read-only context scout for foundry RTL demo requests. Use before implementation when Codex/OpenHands needs to gather spec, repo, toolchain, and model-route context without editing code.
+description: Read-only context scout for foundry RTL requests. Use before implementation when Codex/OpenHands needs to gather spec, repo, toolchain, and model-route context without editing code.
 ---
 
 # Foundry Context Sidekick
@@ -21,7 +21,7 @@ description: Read-only context scout for foundry RTL demo requests. Use before i
 | `spec-scout` | issue body, `examples/`, `docs/`, `openspec/` if present | Normalize requirements and acceptance tests | At most four matching files |
 | `rtl-repo-scout` | RTL/source/test directories | Find likely modules, test patterns, and integration points | At most four matching files |
 | `toolchain-scout` | repo scripts, CI, Makefiles, docs | Find available EDA commands and missing image dependencies | At most four matching files |
-| `model-route-scout` | `configs/`, `docs/repo-memory/` | Recommend model route and data-boundary policy | At most four matching files |
+| `model-route-scout` | `configs/`, `docs/`, `skills/foundry-model-routing/` | Recommend model route and data-boundary policy | At most four matching files |
 
 ## Output Contract
 
@@ -36,4 +36,3 @@ Return a compact brief with:
 - `MISSING_INFO`
 - `CONFIDENCE`
 - `RECOMMENDED_NEXT_STEP`
-

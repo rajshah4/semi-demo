@@ -16,15 +16,15 @@ EDA tools and semiconductor workflows often have heavy setup, brittle dependenci
 
 - Slang or Surelog/UHDM for SystemVerilog parsing/elaboration
 - OpenROAD/OpenLane for digital implementation flows
-- SkyWater 130 or GF180 PDKs for open PDK demos
+- SkyWater 130 or GF180 PDKs for open PDK examples
 - internal foundry scripts and templates
 - license config and approved EDA paths
 
-## Demo Guidance
+## Guidance
 
 Do not start with the heaviest toolchain unless it is already reliable. Start with Verilator or Icarus plus a small testbench. Then explain that the same workflow can run inside a larger approved image.
 
-## Recommended Demo Image
+## Recommended Image
 
 First image:
 
@@ -32,13 +32,13 @@ First image:
 - install `verilator`, `iverilog`, `yosys`, `verible`, `gtkwave`, `make`, `jq`, and `ripgrep`
 - keep the inherited OpenHands entrypoint
 - add a marker file such as `/etc/openhands-semi-eda-image`
-- add `semi-demo` validation helpers, but do not bake secrets into the image
+- add repo-local validation helpers, but do not bake secrets into the image
 
 Verification command inside a fresh conversation:
 
 ```bash
 which verilator iverilog yosys
-bash scripts/validate_rtl.sh rtl/sync_fifo.sv tb/sync_fifo_tb.sv
+bash skills/foundry-eda-validation/scripts/validate_rtl.sh rtl/sync_fifo.sv tb/sync_fifo_tb.sv
 ```
 
 The local custom-image examples currently live under:
@@ -56,11 +56,14 @@ After the lightweight EDA image is stable, add heavier flows only if the meeting
 
 - Slang or Surelog/UHDM for deeper SystemVerilog elaboration
 - OpenROAD/OpenLane for place-and-route stories
-- SkyWater 130 or GF180 PDK assets for open PDK demos
+- SkyWater 130 or GF180 PDK assets for open PDK examples
 - internal foundry lint waivers, design templates, and license config
 
-This keeps the first demo reliable while preserving the enterprise story: foundry IT can bake large, approved toolchains into the runtime.
+This keeps the first implementation reliable while preserving the enterprise
+story: foundry IT can bake large, approved toolchains into the runtime.
 
 ## Image Story
 
-> The model is only one part of the demo. The real enterprise value is an approved runtime image with models, EDA tools, PDKs, scripts, secrets, and policies already wired together.
+> The model is only one part of the workflow. The real enterprise value is an
+> approved runtime image with models, EDA tools, PDKs, scripts, secrets, and
+> policies already wired together.

@@ -1,4 +1,4 @@
-// Starter RTL for the hard-mode OpenHands semiconductor demo.
+// Starter RTL for the OpenHands semiconductor work cell.
 //
 // This file is intentionally incomplete. The `openhands-rtl-build` automation
 // should replace it with a synthesizable FIFO implementation, ideally after

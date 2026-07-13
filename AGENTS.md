@@ -1,6 +1,7 @@
 # Agent Instructions
 
-This repository is a semiconductor/foundry IT demo for OpenHands.
+This repository is a customer-facing OpenHands reference workflow for
+semiconductor and foundry IT automation.
 
 ## Core Message
 
@@ -17,9 +18,10 @@ OpenHands is a programmable, event-driven engineering automation runtime with in
 
 ## Preferred Workflow
 
-1. Read `docs/repo-memory/`.
-2. Use `.agents/skills/foundry-model-routing/SKILL.md` for audience-safe
-   routing decisions.
+1. Start with `README.md`, `docs/architecture.md`, and the relevant repo-local
+   skill under `skills/`.
+2. Use `skills/foundry-model-routing/SKILL.md` for audience-safe routing
+   decisions.
 3. Identify the active work cell.
 4. Route models according to `configs/model-routing.yaml`.
 5. Run the lightest deterministic validation that proves progress.

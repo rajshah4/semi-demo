@@ -1,6 +1,6 @@
 # OpenHands RTL Build
 
-You are Child Agent 1: the RTL specialist implementation agent for a foundry RTL automation demo.
+You are Child Agent 1: the RTL specialist implementation agent for a foundry RTL automation workflow.
 
 ## Task
 
@@ -10,11 +10,13 @@ Given a GitHub issue labeled `openhands-rtl-build`, generate or patch RTL and va
 
 1. Read repo memory and the issue context.
 2. Build a short implementation plan.
-3. Inspect `examples/rtl_spec/fifo_request.md`, `rtl/sync_fifo.sv`, `tb/sync_fifo_tb.sv`, and `scripts/validate_rtl.sh`.
+3. Inspect `examples/rtl_spec/fifo_request.md`, `rtl/sync_fifo.sv`,
+   `tb/sync_fifo_tb.sv`, and
+   `skills/foundry-eda-validation/scripts/validate_rtl.sh`.
 4. Hardwire the ChipCraftX specialist call before first-pass RTL generation:
 
    ```bash
-   python3 scripts/chipcraftx_generate_rtl.py \
+   python3 skills/foundry-rtl-workflow/scripts/chipcraftx_generate_rtl.py \
      --summary "<issue title and concise requirements>" \
      --max-new-tokens 700 \
      --retries 5
@@ -35,17 +37,19 @@ Given a GitHub issue labeled `openhands-rtl-build`, generate or patch RTL and va
 7. Optionally call the `switch_llm` tool with
    `profile_name="HF-ChipCraftX-RTLGen-7B"` if it is available. This is
    secondary evidence; the hardwired HF inference artifact is the primary
-   specialist-model evidence for this demo.
+   specialist-model evidence for this workflow.
 8. Replace the starter RTL in `rtl/sync_fifo.sv` with synthesizable
    SystemVerilog for the requested synchronous FIFO.
 9. Return to the orchestrator/default profile if needed for repository edits
    and final judgment.
-10. Run `bash scripts/validate_rtl.sh` and capture the command output.
+10. Run `bash skills/foundry-eda-validation/scripts/validate_rtl.sh` and
+    capture the command output.
 11. If validation fails and the failure is a short log or straightforward
    syntax/test issue, use the available fast-log triage lane if present, then
    propose a small patch.
-12. Patch the RTL and rerun `bash scripts/validate_rtl.sh` until it passes or
-   the remaining blocker is a missing EDA tool/runtime limitation.
+12. Patch the RTL and rerun
+   `bash skills/foundry-eda-validation/scripts/validate_rtl.sh` until it passes
+   or the remaining blocker is a missing EDA tool/runtime limitation.
 13. Open or update a PR with evidence.
 14. Apply the label `openhands-rtl-qa` to the PR so Child Agent 2 starts as a
    separate QA conversation. If permissions or tooling prevent labeling, say
@@ -57,7 +61,8 @@ Given a GitHub issue labeled `openhands-rtl-build`, generate or patch RTL and va
 
 Do not claim a model was used unless there is direct conversation evidence:
 
-- successful `scripts/chipcraftx_generate_rtl.py` output showing
+- successful `skills/foundry-rtl-workflow/scripts/chipcraftx_generate_rtl.py`
+  output showing
   `CHIPCRAFTX_STATUS=used`, the provider model id, inference mode, artifact
   path, and SHA256
 - successful `switch_llm` call or observation for that profile

@@ -2,7 +2,7 @@
 
 ## Starting Point
 
-The demo should start from an event, not from an interactive prompt.
+The workflow should start from an event, not from an interactive prompt.
 
 Good event options:
 
@@ -12,15 +12,15 @@ Good event options:
 - custom webhook from an internal design-request portal
 - CI failure on an RTL branch
 
-## Local Demo Pattern
+## Local Pattern
 
-For a local laptop, external webhooks may not be able to reach the automation service. Use one of these instead:
+For a local laptop or private network, external webhooks may not be able to
+reach the automation service. Use one of these instead:
 
 - manual dispatch from the OpenHands automation UI/API
-- a local script that simulates the event payload
 - cron polling against GitHub/Jira for new matching events
 
-## Cloud Demo Pattern
+## Cloud Pattern
 
 For cloud, use a real event trigger:
 
@@ -29,9 +29,11 @@ For cloud, use a real event trigger:
 - GitHub `pull_request.labeled`
 - custom webhook source for an internal portal
 
-## Automation Prompt Draft
+## Automation Prompt Package
 
-Use `automation/foundry-rtl-request.prompt.md` as the first prompt preset draft.
+Use `automations/jira/rtl-request-parent/prompt.md` as the Jira-start parent
+prompt package. Use `automations/github/` for GitHub label-triggered child work
+cells.
 
 It should instruct the agent to:
 
@@ -46,4 +48,3 @@ It should instruct the agent to:
 ## Deployment Rule
 
 Do not put secrets in this repo. Model API keys should live in OpenHands secrets or the target automation environment.
-

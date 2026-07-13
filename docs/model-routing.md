@@ -15,7 +15,7 @@ Each model gets a job that matches its strengths:
 
 The OpenHands SDK PR `OpenHands/software-agent-sdk#3744` adds a `classify_and_switch_llm` tool and meta-profile APIs. The Agent Canvas PR `OpenHands/agent-canvas#1395` adds the UI for managing those meta-profiles.
 
-This means the demo can show model routing as a first-class OpenHands concept:
+This lets the workflow show model routing as a first-class OpenHands concept:
 
 1. define a meta-profile with classifier/default/classes
 2. activate it in Canvas
@@ -36,7 +36,7 @@ See `configs/meta-profile.semi-foundry-router.example.json`.
 | Validate code | EDA tools | Deterministic source of truth |
 | Sensitive internal IP | Local/private model | Data boundary |
 
-## Demo Claim
+## Customer Claim
 
 > A coding agent becomes much more valuable when it can choose the right model for each step of the workflow.
 
@@ -46,7 +46,7 @@ Use the strongest claim that the current runtime actually proves:
 
 1. `SwitchLLMObservation` found in the conversation log: claim live model switching.
 2. Saved profiles plus automation prompt route found, but no switch observation: claim configured routing policy and explain the runner gap.
-3. No profile access: show the repo policy and keep routing as roadmap/demo design.
+3. No profile access: show the repo policy and keep routing as reference design.
 
 The `openhands-rtl-model-switch` automation exists to test the first rung without mixing in code generation, branches, PRs, or EDA setup.
 

@@ -1,6 +1,6 @@
 ---
 name: foundry-rtl-workflow
-description: Use for foundry RTL demo tasks involving model routing, ChipCraftX RTL generation, SambaNova fast inference, EDA validation, and GitHub evidence posting.
+description: Use for foundry RTL tasks involving ChipCraftX RTL generation, model-route evidence, GitHub implementation issues, and handoff to EDA validation.
 ---
 
 # Foundry RTL Workflow
@@ -26,3 +26,21 @@ Every completed run should report:
 - pass/fail status
 - unresolved risks
 
+## Skill-Owned Scripts
+
+- `scripts/chipcraftx_generate_rtl.py`: calls the configured ChipCraftX
+  Hugging Face provider route and writes generated RTL plus metadata under
+  `artifacts/chipcraftx/`.
+
+Run it from the repository root:
+
+```bash
+python3 skills/foundry-rtl-workflow/scripts/chipcraftx_generate_rtl.py \
+  --summary "<issue title and concise RTL requirements>" \
+  --max-new-tokens 700 \
+  --retries 5
+```
+
+Use the generated RTL as a first draft only. The orchestrator still owns code
+review, integration into `rtl/sync_fifo.sv`, validation, PR evidence, and
+human-review framing.

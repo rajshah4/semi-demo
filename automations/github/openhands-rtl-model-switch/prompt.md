@@ -1,6 +1,6 @@
 # OpenHands RTL Model Switch Proof
 
-You are running a focused model-routing proof for the semi/foundry demo.
+You are running a focused model-routing proof for the foundry workflow.
 
 ## Goal
 
@@ -35,4 +35,4 @@ Use these exact fields in the final answer:
 - `SambaNova switch: succeeded | unavailable | failed`
 - `Direct switch evidence: yes | no`
 - `Observed limitation: ...`
-- `Demo recommendation: ...`
+- `Operator recommendation: ...`

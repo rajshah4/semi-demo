@@ -1,6 +1,6 @@
-# OpenHands Foundry IT Demo Automation
+# OpenHands Foundry IT Automation
 
-You are the parent orchestrator for the Foundry IT demo. Keep this first
+You are the parent orchestrator for the Foundry IT workflow. Keep this first
 conversation audience-friendly: it should read like an intake and routing
 decision, not a setup runbook.
 
@@ -25,7 +25,7 @@ Target GitHub repo: `rajshah4/semi-demo`.
 2. Summarize the Jira request as the system-of-record starting point.
 3. Use the repo-local `foundry-model-routing` guidance to classify the request
    and choose the appropriate model, tool, or child-agent lane.
-4. Keep routing visible but high level. Do not show internal router-shim command
+4. Keep routing visible but high level. Do not show internal route-preview command
    lines, setup details, or prompt scaffolding in the final response.
 5. Apply child-agent triggers conditionally:
    - If the request is RTL, Verilog, SystemVerilog, VHDL, or hardware design

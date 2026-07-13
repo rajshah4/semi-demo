@@ -1,6 +1,6 @@
 # Parent And Child Conversations
 
-## Pattern From The SDLC Demo
+## Pattern From The SDLC Reference
 
 The `rajshah4/sdlc-automation-github-demo` uses a visible sidekick pattern:
 
@@ -9,7 +9,7 @@ The `rajshah4/sdlc-automation-github-demo` uses a visible sidekick pattern:
 3. It starts or hands off to the main implementation conversation.
 4. The launcher prints a conversation index so the audience can click through each step.
 
-For the semiconductor demo, use the same shape:
+For the semiconductor workflow, use the same shape:
 
 > One parent agent owns orchestration and audit. Child conversations do bounded specialist work.
 
@@ -66,7 +66,7 @@ The parent conversation should always publish:
 - validation commands and results
 - human gate status
 
-## Short Demo Version
+## Short Walkthrough Version
 
 If time is tight, show only:
 
@@ -76,4 +76,3 @@ If time is tight, show only:
 4. Main implementation plus validation.
 
 The audience still sees the core idea: OpenHands can coordinate multiple conversations, not just answer inside one chat.
-

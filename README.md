@@ -1,105 +1,122 @@
-# Semi Demo
+# OpenHands Foundry IT Automation
 
-Demo workspace for showing OpenHands as an agentic engineering platform for semiconductor and foundry IT workflows.
+**Jira request -> model-routed RTL implementation -> EDA validation -> GitHub PR with evidence.**
 
-The core message is not "one coding assistant writes better code." The message is:
+This repository is a customer-facing reference workflow for using OpenHands in
+semiconductor and foundry IT environments. It shows how an engineering request
+can start in a system of record, route to the right model and tool lane, produce
+real RTL changes, run deterministic validation, and preserve a human review
+gate in GitHub.
 
-> OpenHands routes engineering work to the right model, runs the right tools, and executes auditable workflows in controlled local, cloud, or air-gapped environments.
+The point is not that one coding assistant writes better code. The point is:
 
-## Demo Thesis
+> OpenHands is a programmable engineering automation runtime that can route
+> work across models, agents, tools, and controlled runtime environments.
 
-Foundry IT teams need more than IDE autocomplete. They need controlled automation that can:
+## What Problem This Solves
 
-- start from an event such as a ticket, issue, webhook, or design request
-- choose the right model for each task
-- call specialist models for RTL and Verilog work
-- use fast private inference for repeated agent loops
-- run EDA tools as the source of truth
-- preserve traces, logs, outputs, and review points
-- work across local, cloud, and air-gapped deployments
+Foundry IT teams need agentic automation without losing control of sensitive
+design workflows. Common requirements include:
 
-## Primary Demo
+- starting from Jira, GitHub, webhooks, or internal design portals
+- routing RTL work to a Verilog/SystemVerilog specialist model
+- using fast inference for short logs and repeated triage loops
+- keeping sensitive or air-gapped work on approved local infrastructure
+- grounding correctness in EDA tools rather than model confidence
+- preserving issues, PRs, logs, artifacts, and review decisions
 
-**Jira to delegated RTL validation**
+## Primary Workflow
 
-1. A Jira `KAN` Task arrives with label `rtl-request`.
-2. OpenHands starts the parent automation through the `jira-direct` webhook.
-3. The parent summarizes the request and shows the model route table.
-4. The parent delegates Child Agent 1 by creating or updating a GitHub implementation issue and applying `openhands-rtl-build`.
-5. The RTL child uses the ChipCraftX lane for Verilog/RTL generation or repair when model switching is available, then opens or updates a PR.
-6. The RTL child delegates Child Agent 2 by applying `openhands-rtl-qa` to the PR.
-7. The QA child runs EDA checks such as Verilator, Yosys, Verible, Icarus, or cocotb when available and uses the SambaNova lane for fast validation-log triage.
-8. The workflow returns auditable GitHub evidence and a human review gate.
+```text
+Jira RTL request
+  -> parent OpenHands automation classifies and routes the work
+  -> GitHub implementation issue with openhands-rtl-build
+  -> RTL child uses ChipCraftX first-draft generation
+  -> PR with RTL and validation evidence
+  -> QA child runs EDA validation from the repo-local validation skill
+  -> human review and merge gate
+```
 
-## Competitive Positioning
+## Work Cells
 
-Claude Code, Cursor, and Cline are strong interactive coding assistants. This demo should position OpenHands differently:
+| Work cell | Trigger | What OpenHands does | Human control point |
+| --- | --- | --- | --- |
+| **Parent router** | Jira `rtl-request` | Summarizes the ask, applies routing policy, creates GitHub implementation work | Scope and system-of-record visibility |
+| **RTL specialist** | GitHub `openhands-rtl-build` label | Calls the ChipCraftX helper, integrates RTL, opens or updates a PR | PR review and design acceptance |
+| **EDA QA** | GitHub `openhands-rtl-qa` label | Runs static checks plus Verilator, Icarus, and Yosys when installed | Validation acceptance and merge readiness |
+| **Review** | GitHub `openhands-rtl-review` label | Reviews RTL diffs, evidence quality, and risk areas | Which findings block merge |
 
-> OpenHands is a programmable agent runtime for enterprise engineering workflows.
+## Model And Tool Routing
 
-The strongest differentiators to show:
+| Lane | Example | Purpose |
+| --- | --- | --- |
+| Parent orchestration | Sonnet-style reasoning model | Planning, decomposition, final judgment |
+| Fast inference | SambaNova Llama 3.3 70B | Short summaries, log triage, repeated loops |
+| RTL specialist | ChipCraftX RTLGen 7B | Verilog/SystemVerilog first drafts and repair |
+| Private boundary | Local/customer model | Sensitive IP, PDK, or air-gapped work |
+| Correctness | Verilator, Icarus, Yosys | Deterministic validation evidence |
 
-- intelligent model routing
-- event-driven automations
-- subagents and multi-conversation workflows
-- toolchain-grounded validation
-- pre-baked runtime images
-- local-to-cloud-to-air-gapped deployment options
-- auditable traces and policy controls
+Native model switching can be used when the OpenHands runtime exposes it. This
+repo also includes a hardwired ChipCraftX helper so the RTL child can call the
+specialist model directly and persist evidence when hosted inference succeeds.
 
 ## Repository Map
 
-- `docs/demo-script.md` - narrator flow and talk track
-- `docs/live-demo-script.md` - presenter-ready demo script with critical feature callouts
-- `docs/architecture.md` - system architecture and routing diagram
-- `docs/work-cells.md` - SDLC-demo-inspired work cells for foundry/RTL
-- `docs/parent-child-conversations.md` - parent orchestrator and child conversation sidekick pattern
-- `docs/intelligent-model-routing.md` - how SDK/Canvas model-router PRs fit the demo
-- `docs/model-routing.md` - model roles and routing rules
-- `docs/model-router-shim.md` - transparent mock for the native model-router PR behavior
-- `docs/jira-parent-automation.md` - Jira-start parent workflow and label strategy
-- `docs/local-cloud-airgap.md` - deployment tradeoffs
-- `docs/toolchain-image.md` - what to pre-bake into an EDA image
-- `docs/automation-entrypoint.md` - webhook and polling automation starting points
-- `docs/replicated-setup-status.md` - GitHub/Rajistics registration and smoke-test status
-- `docs/inspiration.md` - outside references and demo ideas to mine later
-- `docs/repo-memory/` - durable agent memory and policy notes
-- `automations/jira/` - Jira-start parent prompt package for `rtl-request`
-- `automations/github/` - label-triggered GitHub child and fallback automation prompt packages
-- `.github/` - issue template, PR template, and demo labels
-- `configs/model-routing.yaml` - concrete routing matrix
-- `configs/meta-profile.semi-foundry-router.example.json` - OpenHands Model Router meta-profile example
-- `workflows/foundry-rtl-workflow.yaml` - demo workflow definition
-- `workflows/foundry-rtl-sidekick-workflow.yaml` - visible parent/child conversation workflow
-- `events/new-rtl-block.json` - sample incoming event
-- `events/jira-rtl-request.json` - Jira-style design request fixture for the parent demo
-- `automation/foundry-rtl-request.prompt.md` - prompt preset draft for OpenHands Automation
-- `automations/github/openhands-rtl-sidekick/` - visible parent/child sidekick prompt package
-- `automation/preset-payload.example.json` - sample automation API payload, no secrets
-- `examples/rtl_spec/fifo_request.md` - first RTL block request
-- `rtl/sync_fifo.sv` - intentionally incomplete hard-mode RTL workcell
-- `tb/sync_fifo_tb.sv` - FIFO testbench for the hard-mode workcell
-- `scripts/validate_rtl.sh` - validation harness using Verilator, Icarus, and Yosys when available
-- `scripts/mock_model_router.py` - transparent model-router shim for demo rehearsal
-- `scripts/simulate-event.sh` - local dry-run helper for the event payload
-
-## Current Status
-
-This is a runnable demo scaffold with a smoke-tested Jira parent and GitHub child-label handoff. Next work:
-
-- check whether the local runtime includes SDK PR #3744 and Canvas PR #1395
-- add a helper tool that calls the ChipCraftX HF profile as an RTL specialist
-- add a SambaNova profile smoke test and timing run
-- choose the first EDA validation path, likely Verilator or Icarus first
-- make the local and cloud variants explicit
-- borrow registration/preflight patterns from `rajshah4/sdlc-automation-github-demo`
+- `automations/jira/` - Jira-start parent automation prompt package.
+- `automations/github/` - GitHub label-triggered work-cell prompt packages.
+- `skills/foundry-model-routing/` - routing policy and route preview helper.
+- `skills/foundry-rtl-workflow/` - RTL implementation policy and ChipCraftX helper.
+- `skills/foundry-eda-validation/` - deterministic validation policy and EDA check script.
+- `skills/foundry-context-sidekick/` - read-only context scouting instructions.
+- `configs/model-routing.yaml` - concrete model and tool routing matrix.
+- `configs/meta-profile.semi-foundry-router.example.json` - example model-router profile.
+- `examples/rtl_spec/fifo_request.md` - sample RTL request.
+- `rtl/sync_fifo.sv` - intentionally incomplete RTL work cell.
+- `tb/sync_fifo_tb.sv` - FIFO testbench.
+- `docs/` - architecture, model routing, deployment, toolchain, and automation guides.
+- `.github/` - issue template, PR template, and label definitions.
 
 ## Fast Local Validation
 
+Run the EDA validation skill from the repository root:
+
 ```bash
-python3 scripts/preflight_semi_demo.py
-python3 scripts/mock_model_router.py
-python3 scripts/register_github_automations.py --dry-run
-scripts/simulate-event.sh
-bash scripts/validate_rtl.sh
+bash skills/foundry-eda-validation/scripts/validate_rtl.sh
 ```
+
+Preview the route policy without calling external models:
+
+```bash
+python3 skills/foundry-model-routing/scripts/model_route_preview.py \
+  --event events/jira-rtl-request.json
+```
+
+Run the ChipCraftX helper only in an environment where `HF_TOKEN` is available:
+
+```bash
+python3 skills/foundry-rtl-workflow/scripts/chipcraftx_generate_rtl.py \
+  --summary "Implement the requested synchronous FIFO" \
+  --max-new-tokens 700 \
+  --retries 5
+```
+
+The helper writes generated RTL and metadata under `artifacts/chipcraftx/`,
+which is ignored by Git.
+
+## Build Your Own Version
+
+Use this repository as a pattern:
+
+1. Pick the system of record: Jira, GitHub, ServiceNow, or an internal portal.
+2. Write one parent prompt that classifies the request and applies policy.
+3. Keep each child prompt bounded to one work cell.
+4. Put reusable behavior and scripts inside repo-local skills.
+5. Use labels, PRs, comments, and artifacts as the audit trail.
+6. Keep secrets in OpenHands or local environment stores, never in Git.
+
+## Security Notes
+
+- Do not commit secrets, tokens, endpoint credentials, PDK licenses, or customer IP.
+- Treat EDA tools as the validation authority.
+- Use local/private model lanes for sensitive or air-gapped work.
+- Keep generated artifacts under ignored directories such as `artifacts/`.

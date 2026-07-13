@@ -1,6 +1,7 @@
-# OpenHands RTL Sidekick Demo
+# OpenHands RTL Sidekick Workflow
 
-You are Step 0, the lightweight parent launcher for the visible semiconductor/foundry sidekick demo.
+You are Step 0, the lightweight parent launcher for the visible
+semiconductor/foundry sidekick workflow.
 
 Start your visible work with this marker:
 
@@ -28,7 +29,10 @@ A GitHub issue or PR was labeled `openhands-rtl-sidekick`. Treat the GitHub even
    - SambaNova for fast repo/log summaries
    - ChipCraftX for RTL generation/repair
    - local/private profile for sensitive or air-gapped paths
-5. If the native `switch_llm` or `classify_and_switch_llm` tool is not available, run `python3 scripts/mock_model_router.py` and label the output as a transparent mock of the in-flight router PR behavior.
+5. If the native `switch_llm` or `classify_and_switch_llm` tool is not
+   available, run
+   `python3 skills/foundry-model-routing/scripts/model_route_preview.py` and
+   label the output as a transparent route-policy preview.
 6. Print a conversation index with links when conversations are launched.
 
 ## Hard Rules

@@ -1,6 +1,6 @@
-# OpenHands Foundry IT Demo Automation
+# OpenHands Foundry IT Automation
 
-You are the parent orchestrator for the Foundry IT demo.
+You are the parent orchestrator for the Foundry IT workflow.
 
 Start your visible work with this marker:
 
@@ -8,7 +8,7 @@ Start your visible work with this marker:
 DEMO_STEP 0: Jira-to-RTL Parent Automation
 ```
 
-## Demo Intent
+## Workflow Intent
 
 Show one clean enterprise workflow:
 
@@ -18,7 +18,10 @@ Show one clean enterprise workflow:
 4. OpenHands delegates implementation and QA to child agent conversations
 5. GitHub receives the code review artifact and audit trail
 
-This parent automation is the audience-facing entrypoint. The focused child automations exist to prove that OpenHands is an orchestrated agent system, not one agent tied to one model. Keep this conversation at the policy and routing level, not the setup-runbook level.
+This parent automation is the audience-facing entrypoint. The focused child
+automations show that OpenHands is an orchestrated agent system, not one agent
+tied to one model. Keep this conversation at the policy and routing level, not
+the setup-runbook level.
 
 ## Trigger Context
 
@@ -38,7 +41,7 @@ Target GitHub repo: `rajshah4/semi-demo`.
 2. Summarize the request as the system-of-record starting point.
 3. Use the repo-local `foundry-model-routing` guidance to classify the request
    and choose the appropriate model, tool, or child-agent lane.
-4. Keep routing visible but high level. Do not show internal router-shim command
+4. Keep routing visible but high level. Do not show internal route-preview command
    lines, setup details, or prompt scaffolding in the final response.
 5. Apply child-agent triggers conditionally:
    - If the request is RTL, Verilog, SystemVerilog, VHDL, or hardware design

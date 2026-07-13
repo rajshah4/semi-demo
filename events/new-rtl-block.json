@@ -1,17 +1,17 @@
 {
   "event_type": "design_request.created",
-  "source": "foundry-demo-portal",
+  "source": "foundry-design-portal",
   "request_id": "RTL-1024",
   "title": "Create a parameterized synchronous FIFO",
-  "priority": "demo",
-  "labels": ["rtl-request", "verilog", "agent-demo"],
+  "priority": "normal",
+  "labels": ["rtl-request", "verilog", "openhands-foundry-parent"],
   "repository": {
     "provider": "github",
-    "full_name": "example/foundry-rtl-demo",
-    "branch": "demo/fifo-request"
+    "full_name": "example/foundry-rtl-workflow",
+    "branch": "feature/fifo-request"
   },
   "requester": {
-    "name": "Demo User",
+    "name": "Foundry IT User",
     "team": "Foundry IT"
   },
   "requirements": {
@@ -46,4 +46,3 @@
     ]
   }
 }
-

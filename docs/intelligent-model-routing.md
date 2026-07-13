@@ -2,7 +2,8 @@
 
 ## Product Hook
 
-This demo should highlight intelligent model routing using the OpenHands SDK and Agent Canvas work:
+This reference workflow highlights intelligent model routing using the OpenHands
+SDK and Agent Canvas work:
 
 - SDK PR: https://github.com/OpenHands/software-agent-sdk/pull/3744
 - Agent Canvas PR: https://github.com/OpenHands/agent-canvas/pull/1395
@@ -17,11 +18,11 @@ A meta-profile is a lightweight routing policy:
 - `default_model`: fallback model when no class matches
 - `classes`: task descriptions mapped to saved LLM profiles
 
-For this demo, that lets us show:
+For this workflow, that lets us show:
 
 > The agent can classify the current engineering task and switch to the best model profile for that step.
 
-## Semi Demo Meta-Profile
+## Foundry Meta-Profile
 
 Use `configs/meta-profile.semi-foundry-router.example.json` as the starting point.
 
@@ -32,9 +33,10 @@ Example routing:
 - complex planning/final review -> Sonnet profile
 - sensitive/air-gapped work -> local/private profile
 
-## Lightweight Live Demo
+## Lightweight Runtime Path
 
-Even if the full router PRs are not available in the local runtime yet, show the same concept in a lightweight way:
+Even if the full router PRs are not available in a runtime yet, show the same
+concept in a lightweight way:
 
 1. Open the Model Router / meta-profile settings when available.
 2. Show the `Semi Foundry Router` profile.
@@ -48,23 +50,29 @@ Even if the full router PRs are not available in the local runtime yet, show the
 
 The point is not that the classifier is complicated. The point is that OpenHands has a first-class place to encode routing policy.
 
-## Transparent Mock
+## Route Preview
 
-Until the router PRs are present in the running instance, use the local shim:
+Until native model switching is present in the running instance, use the
+deterministic route preview:
 
 ```bash
-python3 scripts/mock_model_router.py
+python3 skills/foundry-model-routing/scripts/model_route_preview.py
 ```
 
-This prints a simulated route transcript with explicit markers such as `MOCK_ROUTE_DECISION` and `MOCK_SWITCHLLM_OBSERVATION simulated=true`. It is useful for rehearsing the buyer-facing product behavior without claiming native model switching.
+This prints a deterministic route transcript with explicit preview markers. It
+is useful for explaining the policy and audit shape without claiming native
+model switching.
 
 Use this wording:
 
-> This is a transparent mock of the router PR behavior. It shows the policy and the audit shape we want: classify the task, select the saved profile, record the route decision, then hand off to the right model/tool lane.
+> This is a route-policy preview. It shows the audit shape we want: classify the
+> task, select the saved profile, record the route decision, then hand off to
+> the right model/tool lane.
 
 ## Focused Switch Proof
 
-Use the `openhands-rtl-model-switch` label when the demo needs a clean proof separate from RTL generation.
+Use the `openhands-rtl-model-switch` label when the workflow needs a clean proof
+separate from RTL generation.
 
 This automation asks the agent to do only three things:
 
@@ -72,13 +80,19 @@ This automation asks the agent to do only three things:
 2. switch to `HF-ChipCraftX-RTLGen-7B`
 3. switch to `SambaNova-Llama-3.3-70B`
 
-After the run, inspect the conversation event log for `SwitchLLMObservation`. If the event is present, the demo can claim live model switching. If it is absent, keep the claim to saved profiles, routing policy, and the current runner limitation.
+After the run, inspect the conversation event log for `SwitchLLMObservation`.
+If the event is present, the workflow can claim live model switching. If it is
+absent, keep the claim to saved profiles, routing policy, and the current
+runner limitation.
 
-Demo-safe language when the event is absent:
+Safe language when the event is absent:
 
-> The profiles and routing policy are configured, but this runner did not expose the model-switch tool in the automation conversation. For today's demo, I will show routing as policy plus saved profiles, and use the GitHub automation, child conversations, and EDA validation as the live proof points.
+> The profiles and routing policy are configured, but this runner did not expose
+> the model-switch tool in the automation conversation. I will show routing as
+> policy plus saved profiles, and use the GitHub automation, child
+> conversations, and EDA validation as the proof points.
 
-## Demo Talk Track
+## Talk Track
 
 > A human should not have to manually decide which model is best for every step. OpenHands can encode a model routing policy, classify the current task, and switch to the right saved profile. That is especially valuable in foundry IT, where different steps have different latency, accuracy, cost, and data-boundary requirements.
 

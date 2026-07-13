@@ -6,13 +6,13 @@
     "summary": "Create a parameterized synchronous FIFO",
     "type": "Design Request",
     "status": "Open",
-    "priority": "Demo",
+    "priority": "Medium",
     "project": {
       "key": "RTL",
       "name": "Foundry RTL Enablement"
     },
     "reporter": {
-      "displayName": "Foundry IT Demo User"
+      "displayName": "Foundry IT User"
     },
     "labels": [
       "rtl-request",

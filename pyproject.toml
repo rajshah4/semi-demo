@@ -1,10 +1,9 @@
 [project]
-name = "semi-demo"
+name = "openhands-foundry-it-automation"
 version = "0.1.0"
-description = "OpenHands semiconductor/foundry IT demo scaffold"
+description = "OpenHands reference workflow for semiconductor and foundry IT automation"
 requires-python = ">=3.10"
 dependencies = []
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-

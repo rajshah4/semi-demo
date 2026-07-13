@@ -1,15 +1,17 @@
 # GitHub Automation Packages
 
-These prompt packages mirror the SDLC automation demo pattern and adapt it to foundry/RTL workflows. The live Jira-start parent prompt lives in `../jira/rtl-request-parent/`.
+These prompt packages define the GitHub label-triggered work cells for the
+Foundry IT workflow. The Jira-start parent prompt lives in
+`automations/jira/rtl-request-parent/`.
 
 ## Packages
 
-- `openhands-foundry-parent`: GitHub fallback for the audience-facing Jira-to-RTL parent workflow
-- `openhands-rtl-context`: scout the issue/spec and post a routing/context report
-- `openhands-rtl-build`: Child Agent 1, generate or patch RTL, open/update a PR, and hand off to QA
-- `openhands-rtl-qa`: Child Agent 2, run EDA validation and post evidence
-- `openhands-rtl-review`: review RTL diffs and test coverage
-- `openhands-rtl-model-switch`: run a tiny proof that checks whether `switch_llm` is available and produces direct switch evidence
+- `openhands-foundry-parent`: GitHub fallback parent for requests that start in GitHub.
+- `openhands-rtl-context`: read-only issue/spec/context scout.
+- `openhands-rtl-build`: RTL specialist child that calls ChipCraftX, patches RTL, opens or updates a PR, and hands off to QA.
+- `openhands-rtl-qa`: EDA validation child that posts deterministic evidence.
+- `openhands-rtl-review`: RTL diff and validation-evidence reviewer.
+- `openhands-rtl-model-switch`: focused proof package for runtimes that expose native model switching.
 
 ## Trigger Labels
 
@@ -20,16 +22,6 @@ These prompt packages mirror the SDLC automation demo pattern and adapt it to fo
 - `openhands-rtl-review`
 - `openhands-rtl-model-switch`
 
-## Registration
-
-Dry-run all prompt-preset payloads:
-
-```bash
-python3 scripts/register_github_automations.py --dry-run
-```
-
-Register one package:
-
-```bash
-python3 scripts/register_github_automations.py --apply --only openhands-foundry-parent
-```
+Registration helpers are intentionally kept outside this customer-facing repo.
+Use your OpenHands automation service or internal deployment tooling to register
+these prompt packages.
