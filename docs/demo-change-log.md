@@ -63,6 +63,32 @@ Optional or fallback automations can remain disabled during the main demo:
 
 ### Latest Clean Proof Run
 
+Jira-start proof run from `KAN-81` after the parent routing-prompt cleanup:
+
+- Jira: https://rajiv-shah.atlassian.net/browse/KAN-81
+- Parent/router conversation:
+  https://app.replicated.rajistics.com/conversations/776bef67-3e9c-4208-9e49-9954508ac8f2
+- RTL build child conversation:
+  https://app.replicated.rajistics.com/conversations/5367bd29-89e8-4bb8-8505-add601b03dac
+- EDA QA child conversation:
+  https://app.replicated.rajistics.com/conversations/8315273d-3bd9-4a01-b99f-db12c03739e3
+- GitHub issue:
+  https://github.com/rajshah4/semi-demo/issues/17
+- Pull request:
+  https://github.com/rajshah4/semi-demo/pull/18
+- QA evidence comment:
+  https://github.com/rajshah4/semi-demo/pull/18#issuecomment-4958442910
+
+Outcome:
+
+- Parent created the GitHub implementation issue and applied
+  `openhands-rtl-build`.
+- RTL build child opened PR #18 and applied `openhands-rtl-qa`.
+- QA child posted a validation report to the PR.
+- QA static checks passed. Verilator, Icarus Verilog, and Yosys were not
+  installed in that QA environment, so full EDA validation remains a
+  toolchain-gated next step.
+
 Jira-start proof run from `KAN-80`:
 
 - Jira: https://rajiv-shah.atlassian.net/browse/KAN-80
