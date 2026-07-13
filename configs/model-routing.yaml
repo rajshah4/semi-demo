@@ -12,8 +12,8 @@ models:
     role: Verilog/SystemVerilog generation and repair
     profile_hint: HF-ChipCraftX-RTLGen-7B
     model: chipcraftx-io/chipcraftx-rtlgen-7b
-    provider_model: chipcraftx-io/chipcraftx-rtlgen-7b:featherless-ai
-    inference_mode: hf-router-chat
+    provider: featherless-ai
+    inference_mode: hf-featherless-completion
     hardwired_inference: skills/foundry-rtl-workflow/scripts/chipcraftx_generate_rtl.py
   private_sensitive:
     name: Local or private model

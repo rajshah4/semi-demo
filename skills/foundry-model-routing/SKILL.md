@@ -76,8 +76,8 @@ The RTL build child should call
 first-pass RTL generation. A successful run produces:
 
 - `CHIPCRAFTX_STATUS=used`
-- provider model id `chipcraftx-io/chipcraftx-rtlgen-7b:featherless-ai`
-- inference mode `hf-router-chat`
+- provider `featherless-ai`
+- inference mode `hf-featherless-completion`
 - `artifacts/chipcraftx/chipcraftx_metadata.json`
 - `artifacts/chipcraftx/chipcraftx_generated_rtl.sv`
 - a SHA256 hash for the generated RTL

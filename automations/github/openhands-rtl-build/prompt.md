@@ -24,8 +24,8 @@ Given a GitHub issue labeled `openhands-rtl-build`, generate or patch RTL and va
    ```
 
    The helper must use `HF_TOKEN` from the automation environment or OpenHands
-   secret store. By default it calls the Hugging Face router chat endpoint with
-   `chipcraftx-io/chipcraftx-rtlgen-7b:featherless-ai`. It writes:
+   secret store. By default it calls the Hugging Face Featherless completions
+   endpoint with `chipcraftx-io/chipcraftx-rtlgen-7b`. It writes:
    - `artifacts/chipcraftx/chipcraftx_metadata.json`
    - `artifacts/chipcraftx/chipcraftx_raw_response.txt`
    - `artifacts/chipcraftx/chipcraftx_generated_rtl.sv`

@@ -24,6 +24,7 @@ from typing import Any
 
 DEFAULT_MODEL = "chipcraftx-io/chipcraftx-rtlgen-7b"
 DEFAULT_PROVIDER_SUFFIX = "featherless-ai"
+DEFAULT_COMPLETION_ENDPOINT = "https://router.huggingface.co/featherless-ai/v1/completions"
 DEFAULT_CHAT_ENDPOINT = "https://router.huggingface.co/v1/chat/completions"
 DEFAULT_ENDPOINT_TEMPLATES = [
     "https://api-inference.huggingface.co/models/{model}",
@@ -34,27 +35,83 @@ HTTP_USER_AGENT = (
     "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36"
 )
 TRANSIENT_HTTP_STATUSES = {429, 500, 502, 503, 504}
+HF_TOKEN_ALIASES = (
+    "HF_TOKEN",
+    "HUGGINGFACE_API_KEY",
+    "HUGGINGFACEHUB_API_TOKEN",
+    "HUGGING_FACE_HUB_TOKEN",
+)
+AGENT_SERVER_URL_ENV_NAMES = (
+    "AGENT_SERVER_URL",
+    "AUTOMATION_AGENT_SERVER_URL",
+    "RUNTIME_URL",
+)
+SESSION_KEY_ENV_NAMES = (
+    "SESSION_API_KEY",
+    "OH_SESSION_API_KEYS_0",
+    "LOCAL_BACKEND_API_KEY",
+)
 
 
 def get_secret(name: str) -> str:
-    value = os.environ.get(name)
-    if value:
-        return value
+    value, _ = get_secret_with_diagnostics(name)
+    return value
 
-    server_url = os.environ.get("AGENT_SERVER_URL", "").rstrip("/")
-    session_key = os.environ.get("SESSION_API_KEY") or os.environ.get("OH_SESSION_API_KEYS_0")
+
+def first_env(names: tuple[str, ...]) -> tuple[str, str]:
+    for env_name in names:
+        value = os.environ.get(env_name)
+        if value:
+            return value, env_name
+    return "", ""
+
+
+def get_secret_with_diagnostics(
+    name: str,
+    aliases: tuple[str, ...] = (),
+) -> tuple[str, dict[str, Any]]:
+    env_names = tuple(dict.fromkeys((name, *aliases)))
+    value, source_env_name = first_env(env_names)
+    diagnostics: dict[str, Any] = {
+        "requested_secret": name,
+        "env_names_checked": list(env_names),
+        "env_present": bool(value),
+        "source": f"environment:{source_env_name}" if value else "",
+        "agent_server_url_present": False,
+        "session_key_present": False,
+        "secret_store_attempted": False,
+        "secret_store_ok": False,
+    }
+    if value:
+        return value, diagnostics
+
+    server_url, server_url_env_name = first_env(AGENT_SERVER_URL_ENV_NAMES)
+    server_url = server_url.rstrip("/")
+    session_key, session_key_env_name = first_env(SESSION_KEY_ENV_NAMES)
+    diagnostics["agent_server_url_present"] = bool(server_url)
+    diagnostics["agent_server_url_env_name"] = server_url_env_name
+    diagnostics["session_key_present"] = bool(session_key)
+    diagnostics["session_key_env_name"] = session_key_env_name
     if not server_url or not session_key:
-        return ""
+        return "", diagnostics
 
     request = urllib.request.Request(
         f"{server_url}/api/settings/secrets/{name}",
         headers={"X-Session-API-Key": session_key},
     )
+    diagnostics["secret_store_attempted"] = True
     try:
         with urllib.request.urlopen(request, timeout=20) as response:
-            return response.read().decode().strip()
-    except Exception:
-        return ""
+            value = response.read().decode().strip()
+        diagnostics["secret_store_ok"] = bool(value)
+        diagnostics["source"] = "openhands-settings-secret" if value else ""
+        return value, diagnostics
+    except urllib.error.HTTPError as exc:
+        diagnostics["secret_store_http_status"] = exc.code
+        return "", diagnostics
+    except Exception as exc:
+        diagnostics["secret_store_exception"] = type(exc).__name__
+        return "", diagnostics
 
 
 def read_text(path: Path | None) -> str:
@@ -200,6 +257,54 @@ def call_huggingface_chat(
     return extract_chat_text(data), data, endpoint
 
 
+def call_huggingface_completion(
+    *,
+    endpoint: str,
+    model: str,
+    token: str,
+    prompt: str,
+    max_new_tokens: int,
+    temperature: float,
+    timeout: int,
+) -> tuple[str, Any, str]:
+    payload = {
+        "model": model,
+        "prompt": prompt,
+        "max_tokens": max_new_tokens,
+        "temperature": temperature,
+        "stream": False,
+    }
+    request = urllib.request.Request(
+        endpoint,
+        data=json.dumps(payload).encode(),
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "User-Agent": HTTP_USER_AGENT,
+        },
+        method="POST",
+    )
+    with urllib.request.urlopen(request, timeout=timeout) as response:
+        raw = response.read().decode(errors="replace")
+    data = json.loads(raw)
+    return extract_completion_text(data), data, endpoint
+
+
+def extract_completion_text(data: Any) -> str:
+    if isinstance(data, dict):
+        choices = data.get("choices")
+        if isinstance(choices, list) and choices:
+            first = choices[0]
+            if isinstance(first, dict):
+                if isinstance(first.get("text"), str):
+                    return first["text"]
+                message = first.get("message")
+                if isinstance(message, dict) and isinstance(message.get("content"), str):
+                    return message["content"]
+    return extract_generated_text(data)
+
+
 def extract_chat_text(data: Any) -> str:
     if isinstance(data, dict):
         choices = data.get("choices")
@@ -258,6 +363,11 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--output-dir", type=Path, default=Path("artifacts/chipcraftx"))
     parser.add_argument("--model", default=os.getenv("CHIPCRAFTX_HF_MODEL", DEFAULT_MODEL))
     parser.add_argument(
+        "--completion-endpoint",
+        default=os.getenv("CHIPCRAFTX_HF_COMPLETION_ENDPOINT", DEFAULT_COMPLETION_ENDPOINT),
+        help="OpenAI-compatible Hugging Face Featherless text-completions endpoint.",
+    )
+    parser.add_argument(
         "--provider-model",
         default=os.getenv("CHIPCRAFTX_HF_ROUTER_MODEL", ""),
         help="HF router model id, optionally with provider/policy suffix.",
@@ -291,7 +401,7 @@ def main(argv: list[str]) -> int:
     response_path = args.output_dir / "chipcraftx_raw_response.txt"
     rtl_path = args.output_dir / "chipcraftx_generated_rtl.sv"
 
-    token = get_secret("HF_TOKEN")
+    token, secret_diagnostics = get_secret_with_diagnostics("HF_TOKEN", aliases=HF_TOKEN_ALIASES)
     if not token:
         write_json(
             metadata_path,
@@ -299,6 +409,7 @@ def main(argv: list[str]) -> int:
                 "ok": False,
                 "model": args.model,
                 "error": "HF_TOKEN was not available in the environment or OpenHands secret store.",
+                "secret_lookup": secret_diagnostics,
                 "timestamp": int(time.time()),
             },
         )
@@ -325,6 +436,51 @@ def main(argv: list[str]) -> int:
 
     max_attempts = max(1, args.retries)
     for attempt_no in range(1, max_attempts + 1):
+        try:
+            generated_text, raw_data, url = call_huggingface_completion(
+                endpoint=args.completion_endpoint,
+                model=args.model,
+                token=token,
+                prompt=prompt,
+                max_new_tokens=args.max_new_tokens,
+                temperature=args.temperature,
+                timeout=args.timeout,
+            )
+            used_mode = "hf-featherless-completion"
+            break
+        except urllib.error.HTTPError as exc:
+            body = exc.read().decode(errors="replace")
+            attempts.append(
+                {
+                    "mode": "hf-featherless-completion",
+                    "endpoint": args.completion_endpoint,
+                    "model": args.model,
+                    "attempt": attempt_no,
+                    "http_status": exc.code,
+                    "error": body[:2000],
+                }
+            )
+            if exc.code not in TRANSIENT_HTTP_STATUSES or attempt_no == max_attempts:
+                break
+            time.sleep(args.retry_sleep * attempt_no)
+        except Exception as exc:
+            attempts.append(
+                {
+                    "mode": "hf-featherless-completion",
+                    "endpoint": args.completion_endpoint,
+                    "model": args.model,
+                    "attempt": attempt_no,
+                    "exception": type(exc).__name__,
+                    "error": str(exc),
+                }
+            )
+            if attempt_no == max_attempts:
+                break
+            time.sleep(args.retry_sleep * attempt_no)
+
+    for attempt_no in range(1, max_attempts + 1):
+        if generated_text:
+            break
         try:
             generated_text, raw_data, url = call_huggingface_chat(
                 endpoint=args.chat_endpoint,
@@ -429,6 +585,7 @@ def main(argv: list[str]) -> int:
                 "model": args.model,
                 "provider_model": provider_model,
                 "attempts": attempts,
+                "secret_source": secret_diagnostics.get("source"),
                 "timestamp": int(time.time()),
             },
         )
@@ -450,6 +607,7 @@ def main(argv: list[str]) -> int:
             "provider_model": provider_model,
             "mode": used_mode,
             "endpoint": url,
+            "secret_source": secret_diagnostics.get("source"),
             "raw_response_path": str(response_path),
             "generated_rtl_path": str(rtl_path),
             "raw_response_sha256": output_hash,
