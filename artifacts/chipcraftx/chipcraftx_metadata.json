@@ -1,0 +1,6 @@
+{
+  "error": "HF_TOKEN was not available in the environment or OpenHands secret store.",
+  "model": "chipcraftx-io/chipcraftx-rtlgen-7b",
+  "ok": false,
+  "timestamp": 1783952095
+}
