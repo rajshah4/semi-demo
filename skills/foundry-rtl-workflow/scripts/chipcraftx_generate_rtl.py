@@ -46,6 +46,16 @@ AGENT_SERVER_URL_ENV_NAMES = (
     "AUTOMATION_AGENT_SERVER_URL",
     "RUNTIME_URL",
 )
+OPENHANDS_BASE_URL_ENV_NAMES = (
+    "OPENHANDS_BASE_URL",
+    "OPENHANDS_HOST_RAJISTICS",
+    "OPENHANDS_HOST",
+)
+SANDBOX_ID_ENV_NAMES = (
+    "RUNTIME_ID",
+    "SANDBOX_ID",
+    "OH_RUNTIME_ID",
+)
 SESSION_KEY_ENV_NAMES = (
     "SESSION_API_KEY",
     "OH_SESSION_API_KEYS_0",
@@ -77,6 +87,8 @@ def get_secret_with_diagnostics(
         "env_names_checked": list(env_names),
         "env_present": bool(value),
         "source": f"environment:{source_env_name}" if value else "",
+        "v1_secret_store_attempted": False,
+        "v1_secret_store_ok": False,
         "agent_server_url_present": False,
         "session_key_present": False,
         "secret_store_attempted": False,
@@ -85,13 +97,37 @@ def get_secret_with_diagnostics(
     if value:
         return value, diagnostics
 
-    server_url, server_url_env_name = first_env(AGENT_SERVER_URL_ENV_NAMES)
-    server_url = server_url.rstrip("/")
     session_key, session_key_env_name = first_env(SESSION_KEY_ENV_NAMES)
-    diagnostics["agent_server_url_present"] = bool(server_url)
-    diagnostics["agent_server_url_env_name"] = server_url_env_name
+    base_url, base_url_env_name = first_env(OPENHANDS_BASE_URL_ENV_NAMES)
+    base_url = (base_url or "https://app.replicated.rajistics.com").rstrip("/")
+    sandbox_id, sandbox_id_env_name = first_env(SANDBOX_ID_ENV_NAMES)
+    diagnostics["v1_base_url_env_name"] = base_url_env_name or "default"
+    diagnostics["sandbox_id_present"] = bool(sandbox_id)
+    diagnostics["sandbox_id_env_name"] = sandbox_id_env_name
     diagnostics["session_key_present"] = bool(session_key)
     diagnostics["session_key_env_name"] = session_key_env_name
+    if sandbox_id and session_key:
+        diagnostics["v1_secret_store_attempted"] = True
+        request = urllib.request.Request(
+            f"{base_url}/api/v1/sandboxes/{sandbox_id}/settings/secrets/{name}",
+            headers={"X-Session-API-Key": session_key},
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=20) as response:
+                value = response.read().decode().strip()
+            diagnostics["v1_secret_store_ok"] = bool(value)
+            diagnostics["source"] = "openhands-v1-sandbox-secret" if value else ""
+            if value:
+                return value, diagnostics
+        except urllib.error.HTTPError as exc:
+            diagnostics["v1_secret_store_http_status"] = exc.code
+        except Exception as exc:
+            diagnostics["v1_secret_store_exception"] = type(exc).__name__
+
+    server_url, server_url_env_name = first_env(AGENT_SERVER_URL_ENV_NAMES)
+    server_url = server_url.rstrip("/")
+    diagnostics["agent_server_url_present"] = bool(server_url)
+    diagnostics["agent_server_url_env_name"] = server_url_env_name
     if not server_url or not session_key:
         return "", diagnostics
 
