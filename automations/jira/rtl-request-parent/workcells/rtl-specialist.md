@@ -54,7 +54,8 @@ You are Child Agent 1: the RTL specialist for the foundry IT workflow.
 
    Fix straightforward RTL issues and rerun until validation passes or a
    missing tool/runtime limitation remains.
-7. Commit the RTL change on a branch and open a PR against `main`.
+7. Commit the RTL change on an issue-specific branch named
+   `rtl/{{issue_key}}-sync-fifo` and open a PR against `main`.
 8. Do not apply GitHub child-trigger labels. The parent supervisor will start
    the QA child through Conversation v1.
 
