@@ -237,42 +237,65 @@ def start_and_wait_cell(
     child_secrets: dict[str, str] | None = None,
 ) -> dict[str, Any]:
     prompt = oh.render_prompt(PROMPT_ROOT / f"{cell}.md", variables_for_cell(args, cell, prior_summary))
-    start = oh.start_app_conversation(
-        base=base,
-        headers=headers,
-        prompt=prompt,
-        title=f"{args.issue_key} foundry {cell}",
-        repository=args.repo_slug,
-        branch=args.branch,
-        llm_model=args.child_llm_model,
-        parent_conversation_id=parent_conversation_id or None,
-        secrets=child_secrets,
-        run=True,
-        system_message_suffix=(
-            "Foundry demo child conversation. Keep outputs concise, evidence-backed, "
-            "and secret-safe. Never print token or environment values."
-        ),
-    )
-    start_task_id = start.get("id")
-    entry: dict[str, Any] = {"name": cell, "start_task_id": start_task_id, "start_task": oh.redact_for_output(start)}
-    if not start_task_id:
-        entry["status"] = "failed"
-        entry["error"] = "OpenHands did not return a start task id"
-        return entry
+    entry: dict[str, Any] = {"name": cell, "start_attempts": []}
+    start_task: dict[str, Any] = {}
+    conversation_id = ""
+    for attempt in range(1, 4):
+        start = oh.start_app_conversation(
+            base=base,
+            headers=headers,
+            prompt=prompt,
+            title=f"{args.issue_key} foundry {cell}",
+            repository=args.repo_slug,
+            branch=args.branch,
+            llm_model=args.child_llm_model,
+            parent_conversation_id=parent_conversation_id or None,
+            secrets=child_secrets,
+            run=True,
+            system_message_suffix=(
+                "Foundry demo child conversation. Keep outputs concise, evidence-backed, "
+                "and secret-safe. Never print token or environment values."
+            ),
+        )
+        start_task_id = start.get("id")
+        attempt_record: dict[str, Any] = {
+            "attempt": attempt,
+            "start_task_id": start_task_id,
+            "start_task": oh.redact_for_output(start),
+        }
+        entry["start_attempts"].append(attempt_record)
+        entry["start_task_id"] = start_task_id
+        entry["start_task"] = oh.redact_for_output(start)
+        if not start_task_id:
+            entry["status"] = "failed"
+            entry["error"] = "OpenHands did not return a start task id"
+            return entry
 
-    start_task = oh.poll_start_task(
-        base=base,
-        headers=headers,
-        task_id=start_task_id,
-        timeout_seconds=args.start_timeout_seconds,
-        poll_seconds=args.poll_seconds,
-    )
-    conversation_id = start_task.get("app_conversation_id")
-    entry["start_task"] = oh.redact_for_output(start_task)
-    if not conversation_id:
-        entry["status"] = "failed"
-        entry["error"] = "OpenHands start task did not return an app conversation id"
-        return entry
+        start_task = oh.poll_start_task(
+            base=base,
+            headers=headers,
+            task_id=start_task_id,
+            timeout_seconds=args.start_timeout_seconds,
+            poll_seconds=args.poll_seconds,
+        )
+        conversation_id = str(start_task.get("app_conversation_id") or "")
+        attempt_record["start_task_result"] = oh.redact_for_output(start_task)
+        entry["start_task"] = oh.redact_for_output(start_task)
+        if conversation_id:
+            break
+
+        detail = str(start_task.get("detail") or start_task.get("error") or "")
+        retryable_git_provider_error = (
+            "git provider" in detail.lower()
+            or "remote url" in detail.lower()
+            or "authentication issue" in detail.lower()
+        )
+        if attempt == 3 or not retryable_git_provider_error:
+            entry["status"] = "failed"
+            entry["error"] = "OpenHands start task did not return an app conversation id"
+            entry["start_task_detail"] = detail
+            return entry
+        time.sleep(min(30, 5 * attempt))
 
     entry.update(oh.conversation_summary(base, conversation_id))
     write_json(run_dir / f"{cell}.conversation.json", entry)
