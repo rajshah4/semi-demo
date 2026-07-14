@@ -65,7 +65,8 @@ def read_api_key() -> str:
         if value:
             return value.strip()
     raise OpenHandsV1Error(
-        "Missing OpenHands API key. Set OPENHANDS_API_KEY_RAJISTICS or OPENHANDS_API_KEY."
+        "Missing OpenHands API key. Set one of: OPENHANDS_API_KEY_RAJISTICS, "
+        "OPENHANDS_API_KEY, OPENHANDS_API_KEY_ORG, or OH_API_KEY."
     )
 
 
