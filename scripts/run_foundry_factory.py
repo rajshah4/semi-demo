@@ -171,6 +171,23 @@ def runtime_secret_map(secret_names: tuple[str, ...]) -> dict[str, str]:
     return secrets
 
 
+def secret_wait_seconds() -> float:
+    raw = os.getenv("RTL_SECRET_WAIT_SECONDS", "60")
+    try:
+        return max(0.0, float(raw))
+    except ValueError:
+        return 60.0
+
+
+def wait_runtime_secret_map(secret_names: tuple[str, ...]) -> dict[str, str]:
+    deadline = time.monotonic() + secret_wait_seconds()
+    while True:
+        secrets = runtime_secret_map(secret_names)
+        if secrets or time.monotonic() >= deadline:
+            return secrets
+        time.sleep(2)
+
+
 def default_parent_conversation_id() -> str:
     for env_name in (
         "PARENT_CONVERSATION_ID",
@@ -424,11 +441,12 @@ def run_factory(args: argparse.Namespace) -> int:
     entries: list[dict[str, Any]] = []
     prior_summary = ""
     for cell in args.cells:
-        child_secrets = runtime_secret_map(RTL_SECRET_NAMES) if cell == "rtl-specialist" else None
+        child_secrets = wait_runtime_secret_map(RTL_SECRET_NAMES) if cell == "rtl-specialist" else None
         if cell == "rtl-specialist" and not child_secrets:
             raise RuntimeError(
                 "HF_TOKEN was not available in the parent environment or Agent Server secret store; "
-                "configure HF_TOKEN before starting the RTL specialist child."
+                "configure HF_TOKEN before starting the RTL specialist child. "
+                "Set RTL_SECRET_WAIT_SECONDS to wait longer for runtime secret injection."
             )
         entry = start_and_wait_cell(
             args=args,
