@@ -53,11 +53,14 @@ may appear as audit vocabulary, but the parent owns orchestration.
 
 ## Delegated Supervisor Command
 
-Identify the Jira issue key from the event payload. Prefer `issue.key`; fall
-back to `issueKey`. Then run this from the repository root after replacing
-`<ISSUE_KEY>`. The first line is a secret-safe alias for deployments that
-provide `OPENHANDS_API_KEY_ORG` instead of `OPENHANDS_API_KEY_RAJISTICS`; do
-not print environment values while running it:
+Identify the Jira issue key, URL, title, and description from the event
+payload. Prefer `issue.key`; fall back to `issueKey`. Always pass the Jira
+title/body/url directly to the helper from the webhook payload; do not rely on
+Jira REST environment variables for the happy path. Then run this from the
+repository root after replacing `<ISSUE_KEY>`, `<ISSUE_URL>`, `<REQUEST_TITLE>`,
+and `<REQUEST_BODY>`. The first line is a secret-safe alias for deployments that
+provide `OPENHANDS_API_KEY_ORG` instead of `OPENHANDS_API_KEY_RAJISTICS`; do not
+print environment values while running it:
 
 ```bash
 export OPENHANDS_API_KEY_RAJISTICS="${OPENHANDS_API_KEY_RAJISTICS:-${OPENHANDS_API_KEY_ORG:-${OPENHANDS_API_KEY:-}}}"
@@ -67,8 +70,10 @@ python3 scripts/run_foundry_factory.py \
   --repo-slug rajshah4/semi-demo \
   --branch main \
   --issue-key <ISSUE_KEY> \
-  --cell-timeout-seconds 1800 \
-  --post-jira-comment
+  --issue-url "<ISSUE_URL>" \
+  --request-title "<REQUEST_TITLE>" \
+  --request-body "<REQUEST_BODY>" \
+  --cell-timeout-seconds 1800
 ```
 
 The helper is the control plane. It uses:
