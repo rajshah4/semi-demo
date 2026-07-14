@@ -90,6 +90,9 @@ Required parent runtime capabilities:
 
 Never print token values, authorization headers, encrypted settings, or raw
 environment dumps.
+Do not run `env`, `printenv`, `set`, or secret-grep commands to debug
+credentials. If a required secret is missing, report the missing capability by
+secret name only, without printing values or value previews.
 
 ## Output
 
