@@ -30,8 +30,8 @@ design workflows. Common requirements include:
 ```text
 Jira RTL request
   -> parent OpenHands automation classifies and routes the work
-  -> GitHub implementation issue with openhands-rtl-build
-  -> RTL child uses ChipCraftX first-draft generation
+  -> parent creates child conversations through Conversation v1
+  -> RTL child receives HF_TOKEN as a child-scoped secret and uses ChipCraftX
   -> PR with RTL and validation evidence
   -> QA child runs EDA validation from the repo-local validation skill
   -> human review and merge gate
@@ -41,9 +41,9 @@ Jira RTL request
 
 | Work cell | Trigger | What OpenHands does | Human control point |
 | --- | --- | --- | --- |
-| **Parent router** | Jira `rtl-request` | Summarizes the ask, applies routing policy, creates GitHub implementation work | Scope and system-of-record visibility |
-| **RTL specialist** | GitHub `openhands-rtl-build` label | Calls the ChipCraftX helper, integrates RTL, opens or updates a PR | PR review and design acceptance |
-| **EDA QA** | GitHub `openhands-rtl-qa` label | Runs static checks plus Verilator, Icarus, and Yosys when installed | Validation acceptance and merge readiness |
+| **Parent router** | Jira `rtl-request` | Summarizes the ask, applies routing policy, and starts child conversations through Conversation v1 | Scope and system-of-record visibility |
+| **RTL specialist** | Parent-created child conversation | Receives `HF_TOKEN` as a child-scoped secret, calls the ChipCraftX helper, integrates RTL, opens or updates a PR | PR review and design acceptance |
+| **EDA QA** | Parent-created child conversation after RTL final | Runs static checks plus Verilator, Icarus, and Yosys when installed | Validation acceptance and merge readiness |
 | **Review** | GitHub `openhands-rtl-review` label | Reviews RTL diffs, evidence quality, and risk areas | Which findings block merge |
 
 ## Model And Tool Routing
@@ -64,7 +64,13 @@ model-agnostic.
 ## Repository Map
 
 - `automations/jira/` - Jira-start parent automation prompt package.
-- `automations/github/` - GitHub label-triggered work-cell prompt packages.
+- `automations/jira/rtl-request-parent/workcells/` - child work-cell prompts for
+  Conversation v1 delegated runs.
+- `automations/github/` - optional GitHub label-triggered work-cell prompt
+  packages for audit/fallback demos.
+- `scripts/run_foundry_factory.py` - parent supervisor that creates and monitors
+  child app conversations.
+- `scripts/openhands_v1_delegate.py` - dependency-free Conversation v1 API helper.
 - `skills/foundry-model-routing/` - routing policy and route preview helper.
 - `skills/foundry-rtl-workflow/` - RTL implementation policy and ChipCraftX helper.
 - `skills/foundry-eda-validation/` - deterministic validation policy and EDA check script.
@@ -108,10 +114,13 @@ Use this repository as a pattern:
 
 1. Pick the system of record: Jira, GitHub, ServiceNow, or an internal portal.
 2. Write one parent prompt that classifies the request and applies policy.
-3. Keep each child prompt bounded to one work cell.
-4. Put reusable behavior and scripts inside repo-local skills.
-5. Use labels, PRs, comments, and artifacts as the audit trail.
-6. Keep secrets in OpenHands or local environment stores, never in Git.
+3. Start child conversations through Conversation v1 with
+   `parent_conversation_id` and narrow child prompts.
+4. Pass child-specific secrets with the v1 `secrets` field rather than printing
+   or storing them.
+5. Put reusable behavior and scripts inside repo-local skills.
+6. Use labels, PRs, comments, and artifacts as the audit trail.
+7. Keep secrets in OpenHands or local environment stores, never in Git.
 
 ## Security Notes
 
