@@ -87,9 +87,7 @@ The helper is the control plane. It uses:
 Required parent runtime capabilities:
 
 - `OPENHANDS_API_KEY_RAJISTICS`, `OPENHANDS_API_KEY`, or `OPENHANDS_API_KEY_ORG`
-- `HF_TOKEN` in the parent environment or retrievable from the parent sandbox's
-  v1 scoped secret endpoint
-- Jira API secrets if `--post-jira-comment` is used
+- `HF_TOKEN` in the parent environment
 
 Never print token values, authorization headers, encrypted settings, or raw
 environment dumps.
