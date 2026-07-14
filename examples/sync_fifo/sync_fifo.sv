@@ -27,6 +27,7 @@ module sync_fifo #(
       wr_ptr <= '0;
       rd_ptr <= '0;
       count <= '0;
+      dout <= '0;
     end else begin
       case ({wr_en && !full, rd_en && !empty})
         2'b10: begin
@@ -35,11 +36,13 @@ module sync_fifo #(
           count <= count + 1'b1;
         end
         2'b01: begin
+          dout <= mem[rd_ptr];
           rd_ptr <= (rd_ptr + 1'b1) % DEPTH;
           count <= count - 1'b1;
         end
         2'b11: begin
           mem[wr_ptr] <= din;
+          dout <= mem[rd_ptr];
           wr_ptr <= (wr_ptr + 1'b1) % DEPTH;
           rd_ptr <= (rd_ptr + 1'b1) % DEPTH;
         end
@@ -47,8 +50,6 @@ module sync_fifo #(
       endcase
     end
   end
-
-  assign dout = mem[rd_ptr];
   assign full = (count == DEPTH);
   assign empty = (count == '0);
 
