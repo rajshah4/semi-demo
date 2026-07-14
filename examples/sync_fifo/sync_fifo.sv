@@ -1,8 +1,7 @@
-// Starter RTL for the OpenHands sync FIFO example work cell.
+// Synchronous FIFO - synthesizable SystemVerilog implementation
 //
-// This file is intentionally incomplete. The `openhands-rtl-build` automation
-// should replace it with a synthesizable FIFO implementation, ideally after
-// switching to the `HF-ChipCraftX-RTLGen-7B` specialist profile.
+// Parameterized synchronous FIFO with configurable width and depth.
+// Active-low synchronous reset. Supports simultaneous read/write operations.
 
 module sync_fifo #(
   parameter int WIDTH = 8,
@@ -18,9 +17,54 @@ module sync_fifo #(
   output logic             empty
 );
 
-  // TODO: implement storage, pointers, occupancy count, and flag logic.
-  assign dout = '0;
-  assign full = 1'b0;
-  assign empty = 1'b1;
+  localparam int ADDR_WIDTH = $clog2(DEPTH);
+  
+  // Storage array
+  logic [WIDTH-1:0] mem [0:DEPTH-1];
+  
+  // Read and write pointers
+  logic [ADDR_WIDTH-1:0] wr_ptr;
+  logic [ADDR_WIDTH-1:0] rd_ptr;
+  
+  // Occupancy counter
+  logic [ADDR_WIDTH:0] count;
+  
+  // Flag generation
+  assign empty = (count == 0);
+  assign full  = (count == DEPTH);
+  
+  // Write operation
+  always_ff @(posedge clk) begin
+    if (!rst_n) begin
+      wr_ptr <= '0;
+    end else if (wr_en && !full) begin
+      mem[wr_ptr] <= din;
+      wr_ptr <= (wr_ptr == DEPTH-1) ? '0 : wr_ptr + 1'b1;
+    end
+  end
+  
+  // Read operation
+  always_ff @(posedge clk) begin
+    if (!rst_n) begin
+      rd_ptr <= '0;
+      dout <= '0;
+    end else if (rd_en && !empty) begin
+      dout <= mem[rd_ptr];
+      rd_ptr <= (rd_ptr == DEPTH-1) ? '0 : rd_ptr + 1'b1;
+    end
+  end
+  
+  // Occupancy counter - handles simultaneous read/write
+  always_ff @(posedge clk) begin
+    if (!rst_n) begin
+      count <= '0;
+    end else begin
+      case ({wr_en && !full, rd_en && !empty})
+        2'b10: count <= count + 1'b1;  // Write only
+        2'b01: count <= count - 1'b1;  // Read only
+        default: count <= count;        // Both or neither
+      endcase
+    end
+  end
 
 endmodule
