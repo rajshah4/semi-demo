@@ -23,7 +23,7 @@ module sync_fifo #(
   logic [ADDR_WIDTH:0] rd_ptr;
   logic [ADDR_WIDTH:0] count;
 
-  assign full = (count == DEPTH);
+  assign full = (count == (ADDR_WIDTH+1)'(DEPTH));
   assign empty = (count == 0);
 
   always_ff @(posedge clk) begin
