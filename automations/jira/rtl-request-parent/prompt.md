@@ -58,12 +58,15 @@ payload. Prefer `issue.key`; fall back to `issueKey`. Always pass the Jira
 title/body/url directly to the helper from the webhook payload; do not rely on
 Jira REST environment variables for the happy path. Then run this from the
 repository root after replacing `<ISSUE_KEY>`, `<ISSUE_URL>`, `<REQUEST_TITLE>`,
-and `<REQUEST_BODY>`. The first line is a secret-safe alias for deployments that
-provide `OPENHANDS_API_KEY_ORG` instead of `OPENHANDS_API_KEY_RAJISTICS`; do not
-print environment values while running it:
+and `<REQUEST_BODY>`. The first two lines are secret-safe aliases for
+deployments that provide `OPENHANDS_API_KEY_ORG` instead of
+`OPENHANDS_API_KEY_RAJISTICS` and for secret-injection runtimes that require an
+explicit, non-printing reference to `HF_TOKEN`; do not print environment values
+while running them:
 
 ```bash
 export OPENHANDS_API_KEY_RAJISTICS="${OPENHANDS_API_KEY_RAJISTICS:-${OPENHANDS_API_KEY_ORG:-${OPENHANDS_API_KEY:-}}}"
+export HF_TOKEN="${HF_TOKEN:-}"
 python3 scripts/run_foundry_factory.py \
   --base-url https://app.replicated.rajistics.com \
   --repo-slug rajshah4/semi-demo \
