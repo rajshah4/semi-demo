@@ -1,8 +1,5 @@
-// Starter RTL for the OpenHands sync FIFO example work cell.
-//
-// This file is intentionally incomplete. The `openhands-rtl-build` automation
-// should replace it with a synthesizable FIFO implementation, ideally after
-// switching to the `HF-ChipCraftX-RTLGen-7B` specialist profile.
+// Synchronous FIFO with parameterized WIDTH and DEPTH
+// Generated with ChipCraftX routing, refined by OpenHands orchestration
 
 module sync_fifo #(
   parameter int WIDTH = 8,
@@ -18,9 +15,39 @@ module sync_fifo #(
   output logic             empty
 );
 
-  // TODO: implement storage, pointers, occupancy count, and flag logic.
-  assign dout = '0;
-  assign full = 1'b0;
-  assign empty = 1'b1;
+  localparam int ADDR_WIDTH = $clog2(DEPTH);
+
+  logic [WIDTH-1:0] mem [0:DEPTH-1];
+  logic [ADDR_WIDTH-1:0] wr_ptr;
+  logic [ADDR_WIDTH-1:0] rd_ptr;
+  logic [ADDR_WIDTH:0] count;
+
+  assign full = (count == DEPTH);
+  assign empty = (count == 0);
+
+  always_ff @(posedge clk) begin
+    if (!rst_n) begin
+      wr_ptr <= '0;
+      rd_ptr <= '0;
+      count <= '0;
+      dout <= '0;
+    end else begin
+      if (wr_en && !full) begin
+        mem[wr_ptr] <= din;
+        wr_ptr <= (wr_ptr == DEPTH-1) ? '0 : wr_ptr + 1'b1;
+      end
+
+      if (rd_en && !empty) begin
+        dout <= mem[rd_ptr];
+        rd_ptr <= (rd_ptr == DEPTH-1) ? '0 : rd_ptr + 1'b1;
+      end
+
+      if (wr_en && !full && !(rd_en && !empty)) begin
+        count <= count + 1'b1;
+      end else if (rd_en && !empty && !(wr_en && !full)) begin
+        count <= count - 1'b1;
+      end
+    end
+  end
 
 endmodule
