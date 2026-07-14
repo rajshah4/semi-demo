@@ -33,9 +33,9 @@ may appear as audit vocabulary, but the parent owns orchestration.
    secret plumbing in the final response.
 5. If the request is RTL, Verilog, SystemVerilog, VHDL, or hardware design work,
    run the delegated supervisor helper below. It creates child app
-   conversations through Conversation v1, relies on sandbox-provided secrets
-   such as `HF_TOKEN` inside the child runtime, waits for child finals, and
-   writes a lifecycle report.
+   conversations through Conversation v1, provisions the RTL specialist child
+   with the approved `HF_TOKEN` from the runtime secret store, waits for child
+   finals, and writes a lifecycle report.
 6. If the request is primarily validation, regression, lint, synthesis,
    simulation, or log triage, run only the `eda-qa` cell with the relevant PR
    context.
@@ -79,14 +79,14 @@ The helper is the control plane. It uses:
 
 - `POST /api/v1/app-conversations` to create child conversations
 - standalone child conversations; do not set `parent_conversation_id`
-- sandbox-provided `HF_TOKEN` in the child runtime for the RTL specialist
+- runtime-provisioned `HF_TOKEN` only for the RTL specialist child
 - `/api/v1/app-conversations/start-tasks` and
   `/api/v1/conversation/{id}/events/search` to monitor child lifecycle
 
 Required parent runtime capabilities:
 
 - `OPENHANDS_API_KEY_RAJISTICS`, `OPENHANDS_API_KEY`, or `OPENHANDS_API_KEY_ORG`
-- `HF_TOKEN` configured as an OpenHands sandbox secret
+- `HF_TOKEN` configured as an OpenHands runtime secret
 
 Never print token values, authorization headers, encrypted settings, or raw
 environment dumps.

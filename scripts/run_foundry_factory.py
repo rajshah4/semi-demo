@@ -17,6 +17,12 @@ import openhands_v1_delegate as oh
 REPO_ROOT = Path(__file__).resolve().parents[1]
 PROMPT_ROOT = REPO_ROOT / "automations" / "jira" / "rtl-request-parent" / "workcells"
 ACTIVE_WORK_CELLS = ("rtl-specialist", "eda-qa")
+RTL_SECRET_NAMES = (
+    "HF_TOKEN",
+    "HUGGINGFACE_API_KEY",
+    "HUGGINGFACEHUB_API_TOKEN",
+    "HUGGING_FACE_HUB_TOKEN",
+)
 
 
 def write_json(path: Path, data: Any) -> None:
@@ -123,6 +129,48 @@ def parse_status(final_text: str, fallback: str) -> str:
     return fallback
 
 
+def session_api_key() -> str:
+    for env_name in ("SESSION_API_KEY", "OH_SESSION_API_KEYS_0", "OPENHANDS_SESSION_API_KEY"):
+        value = os.getenv(env_name)
+        if value:
+            return value.strip()
+    return ""
+
+
+def runtime_secret(secret_name: str) -> str:
+    base = (os.getenv("AGENT_SERVER_URL") or os.getenv("RUNTIME_URL") or "").rstrip("/")
+    key = session_api_key()
+    if not base or not key:
+        return ""
+    request = urllib.request.Request(
+        f"{base}/api/settings/secrets/{secret_name}",
+        headers={"X-Session-API-Key": key, "Accept": "application/json"},
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=30) as response:
+            raw = response.read().decode("utf-8", errors="replace").strip()
+    except Exception:
+        return ""
+    if not raw:
+        return ""
+    try:
+        decoded = json.loads(raw)
+    except json.JSONDecodeError:
+        return raw.strip().strip('"').strip("'")
+    return decoded if isinstance(decoded, str) else str(decoded or "")
+
+
+def runtime_secret_map(secret_names: tuple[str, ...]) -> dict[str, str]:
+    secrets: dict[str, str] = {}
+    for name in secret_names:
+        value = os.getenv(name) or runtime_secret(name)
+        if value:
+            secrets[name] = value
+    if secrets and "HF_TOKEN" not in secrets:
+        secrets["HF_TOKEN"] = next(iter(secrets.values()))
+    return secrets
+
+
 def default_parent_conversation_id() -> str:
     for env_name in (
         "PARENT_CONVERSATION_ID",
@@ -186,6 +234,7 @@ def start_and_wait_cell(
     run_dir: Path,
     cell: str,
     prior_summary: str,
+    child_secrets: dict[str, str] | None = None,
 ) -> dict[str, Any]:
     prompt = oh.render_prompt(PROMPT_ROOT / f"{cell}.md", variables_for_cell(args, cell, prior_summary))
     entry: dict[str, Any] = {"name": cell, "start_attempts": []}
@@ -201,6 +250,7 @@ def start_and_wait_cell(
             branch=args.branch,
             llm_model=args.child_llm_model,
             parent_conversation_id=None,
+            secrets=child_secrets,
             run=True,
             system_message_suffix=(
                 "Foundry demo child conversation. Keep outputs concise, evidence-backed, "
@@ -314,7 +364,7 @@ def lifecycle_report(args: argparse.Namespace, entries: list[dict[str, Any]], pa
     lines.extend(["", "## Model Routing Evidence", ""])
     lines.append("- Parent selected the RTL specialist lane for RTL/SystemVerilog implementation.")
     lines.append(
-        "- The RTL child was created through Conversation v1; sandbox-provided `HF_TOKEN` enables the ChipCraftX helper."
+        "- The RTL child was created through Conversation v1 with runtime-provisioned specialist credentials for ChipCraftX."
     )
     lines.append("- The QA child uses deterministic EDA/tool evidence as the correctness authority.")
     lines.extend(
@@ -350,6 +400,8 @@ def jira_summary_comment(args: argparse.Namespace, entries: list[dict[str, Any]]
 def run_factory(args: argparse.Namespace) -> int:
     if args.env_file:
         oh.load_env_file(args.env_file)
+    elif (REPO_ROOT / ".env").exists():
+        oh.load_env_file(REPO_ROOT / ".env")
     if args.issue_key and (not args.request_title or not args.request_body):
         issue = fetch_jira_issue(args.issue_key)
         args.request_title = args.request_title or issue["request_title"]
@@ -372,6 +424,12 @@ def run_factory(args: argparse.Namespace) -> int:
     entries: list[dict[str, Any]] = []
     prior_summary = ""
     for cell in args.cells:
+        child_secrets = runtime_secret_map(RTL_SECRET_NAMES) if cell == "rtl-specialist" else None
+        if cell == "rtl-specialist" and not child_secrets:
+            raise RuntimeError(
+                "HF_TOKEN was not available in the parent environment or Agent Server secret store; "
+                "configure HF_TOKEN before starting the RTL specialist child."
+            )
         entry = start_and_wait_cell(
             args=args,
             base=base,
@@ -379,6 +437,7 @@ def run_factory(args: argparse.Namespace) -> int:
             run_dir=run_dir,
             cell=cell,
             prior_summary=prior_summary,
+            child_secrets=child_secrets,
         )
         entries.append(entry)
         write_json(run_dir / "children.json", entries)
