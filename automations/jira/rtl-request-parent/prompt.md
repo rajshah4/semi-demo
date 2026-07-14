@@ -55,9 +55,12 @@ may appear as audit vocabulary, but the parent owns orchestration.
 
 Identify the Jira issue key from the event payload. Prefer `issue.key`; fall
 back to `issueKey`. Then run this from the repository root after replacing
-`<ISSUE_KEY>`:
+`<ISSUE_KEY>`. The first line is a secret-safe alias for deployments that
+provide `OPENHANDS_API_KEY_ORG` instead of `OPENHANDS_API_KEY_RAJISTICS`; do
+not print environment values while running it:
 
 ```bash
+export OPENHANDS_API_KEY_RAJISTICS="${OPENHANDS_API_KEY_RAJISTICS:-${OPENHANDS_API_KEY_ORG:-${OPENHANDS_API_KEY:-}}}"
 python3 scripts/run_foundry_factory.py \
   --base-url https://app.replicated.rajistics.com \
   --repo-slug rajshah4/semi-demo \
