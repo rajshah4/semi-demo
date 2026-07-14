@@ -37,7 +37,10 @@ module sync_fifo #(
       wr_ptr <= '0;
     end else if (wr_en && !full) begin
       mem[wr_ptr] <= din;
-      wr_ptr <= (wr_ptr + 1) % DEPTH;
+      if (wr_ptr == DEPTH-1)
+        wr_ptr <= '0;
+      else
+        wr_ptr <= wr_ptr + 1;
     end
   end
 
@@ -46,7 +49,10 @@ module sync_fifo #(
     if (!rst_n) begin
       rd_ptr <= '0;
     end else if (rd_en && !empty) begin
-      rd_ptr <= (rd_ptr + 1) % DEPTH;
+      if (rd_ptr == DEPTH-1)
+        rd_ptr <= '0;
+      else
+        rd_ptr <= rd_ptr + 1;
     end
   end
 
