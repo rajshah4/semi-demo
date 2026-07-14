@@ -38,6 +38,25 @@ DEMO_STEP 0: Foundry RTL Sidekick Launcher
 - Do not rerun a launcher after child conversations have started unless the human approves duplicate conversations.
 - The final response must include child conversation links when available.
 
+## Conversation v1 Child Handoff
+
+For child conversations that need runtime secrets, use a two-phase start:
+
+1. Create the child app conversation with `initial_message.run: false`.
+2. Wait for the child `conversation_url` and `session_api_key`.
+3. Attach only the required secret names through the child runtime
+   `POST /api/conversations/{id}/secrets` endpoint using `StaticSecret`.
+4. Start the child with `POST /api/conversations/{id}/run`.
+
+If `/run` returns `409 Conversation already running`, treat that as non-fatal
+and continue monitoring the child. For this handoff path, a direct read from
+`/api/settings/secrets/{name}` is not the proof point; verify through the child
+execution environment or the specialist helper's model-use metadata.
+
+Keep children as standalone conversations; do not set `parent_conversation_id`.
+Never print secret values, authorization headers, encrypted settings, or raw
+environment dumps while debugging this flow.
+
 ## Final Response
 
 Print a compact conversation index:

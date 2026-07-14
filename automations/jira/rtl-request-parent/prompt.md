@@ -33,8 +33,8 @@ may appear as audit vocabulary, but the parent owns orchestration.
    secret plumbing in the final response.
 5. If the request is RTL, Verilog, SystemVerilog, VHDL, or hardware design work,
    run the delegated supervisor helper below. It creates child app
-   conversations through Conversation v1, provisions the RTL specialist child
-   with the approved `HF_TOKEN` from the runtime secret store, waits for child
+   conversations through Conversation v1, attaches the approved `HF_TOKEN` to
+   the RTL specialist child before starting that child run, waits for child
    finals, and writes a lifecycle report.
 6. If the request is primarily validation, regression, lint, synthesis,
    simulation, or log triage, run only the `eda-qa` cell with the relevant PR
@@ -79,7 +79,10 @@ The helper is the control plane. It uses:
 
 - `POST /api/v1/app-conversations` to create child conversations
 - standalone child conversations; do not set `parent_conversation_id`
+- `POST /api/conversations/{id}/secrets` on the child runtime before the RTL
+  specialist run starts
 - runtime-provisioned `HF_TOKEN` only for the RTL specialist child
+- `POST /api/conversations/{id}/run` to start a secret-provisioned child
 - `/api/v1/app-conversations/start-tasks` and
   `/api/v1/conversation/{id}/events/search` to monitor child lifecycle
 

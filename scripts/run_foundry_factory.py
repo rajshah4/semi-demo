@@ -267,8 +267,7 @@ def start_and_wait_cell(
             branch=args.branch,
             llm_model=args.child_llm_model,
             parent_conversation_id=None,
-            secrets=child_secrets,
-            run=True,
+            run=not child_secrets,
             system_message_suffix=(
                 "Foundry demo child conversation. Keep outputs concise, evidence-backed, "
                 "and secret-safe. Never print token or environment values."
@@ -315,6 +314,18 @@ def start_and_wait_cell(
         time.sleep(min(30, 5 * attempt))
 
     entry.update(oh.conversation_summary(base, conversation_id))
+    if child_secrets:
+        entry["runtime_secret_provisioning"] = oh.provision_runtime_secrets(
+            base=base,
+            headers=headers,
+            conversation_id=conversation_id,
+            secrets=child_secrets,
+        )
+        entry["runtime_run"] = oh.run_runtime_conversation(
+            base=base,
+            headers=headers,
+            conversation_id=conversation_id,
+        )
     write_json(run_dir / f"{cell}.conversation.json", entry)
 
     terminal = oh.poll_conversation(
