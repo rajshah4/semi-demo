@@ -1,8 +1,17 @@
-// Starter RTL for the OpenHands sync FIFO example work cell.
+// Synchronous FIFO
+// Synthesizable SystemVerilog implementation for streaming adapter
 //
-// This file is intentionally incomplete. The `openhands-rtl-build` automation
-// should replace it with a synthesizable FIFO implementation, ideally after
-// switching to the `HF-ChipCraftX-RTLGen-7B` specialist profile.
+// Parameters:
+//   WIDTH: Data width (default 8)
+//   DEPTH: FIFO depth (default 16)
+//
+// Reset behavior:
+//   Active-low synchronous reset clears pointers and sets empty flag
+//
+// Boundary behavior:
+//   Write when wr_en=1 and full=0
+//   Read when rd_en=1 and empty=0
+//   Simultaneous read/write allowed when neither violates full/empty
 
 module sync_fifo #(
   parameter int WIDTH = 8,
@@ -18,9 +27,44 @@ module sync_fifo #(
   output logic             empty
 );
 
-  // TODO: implement storage, pointers, occupancy count, and flag logic.
-  assign dout = '0;
-  assign full = 1'b0;
-  assign empty = 1'b1;
+  localparam int ADDR_WIDTH = $clog2(DEPTH);
+
+  logic [WIDTH-1:0] mem [0:DEPTH-1];
+  logic [ADDR_WIDTH-1:0] wr_ptr;
+  logic [ADDR_WIDTH-1:0] rd_ptr;
+  logic [ADDR_WIDTH:0] count;
+
+  assign full = (count == DEPTH);
+  assign empty = (count == 0);
+
+  logic do_write;
+  logic do_read;
+  assign do_write = wr_en && !full;
+  assign do_read = rd_en && !empty;
+
+  always_ff @(posedge clk) begin
+    if (!rst_n) begin
+      wr_ptr <= '0;
+      rd_ptr <= '0;
+      count <= '0;
+    end else begin
+      if (do_write) begin
+        mem[wr_ptr] <= din;
+        wr_ptr <= (wr_ptr + 1) % DEPTH;
+      end
+
+      if (do_read) begin
+        rd_ptr <= (rd_ptr + 1) % DEPTH;
+      end
+
+      case ({do_write, do_read})
+        2'b10: count <= count + 1;
+        2'b01: count <= count - 1;
+        default: count <= count;
+      endcase
+    end
+  end
+
+  assign dout = mem[rd_ptr];
 
 endmodule
