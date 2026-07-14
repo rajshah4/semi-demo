@@ -163,41 +163,6 @@ def find_parent_conversation(base: str, headers: dict[str, str], explicit_id: st
     return {}
 
 
-def read_scoped_secret(
-    *,
-    base: str,
-    sandbox_id: str,
-    session_api_key: str,
-    secret_name: str,
-) -> str:
-    headers = {
-        "X-Session-API-Key": session_api_key,
-        "Accept": "application/json",
-    }
-    value = oh.request_json(
-        "GET",
-        oh.endpoint(base, f"/api/v1/sandboxes/{sandbox_id}/settings/secrets/{secret_name}"),
-        headers,
-        timeout=60,
-    )
-    if isinstance(value, str):
-        return value
-    return str(value or "")
-
-
-def get_secret_for_child(
-    *,
-    base: str,
-    parent_conversation: dict[str, Any],
-    secret_name: str,
-) -> str:
-    del base, parent_conversation
-    value = os.getenv(secret_name)
-    if value:
-        return value
-    raise RuntimeError(f"{secret_name} is required in the parent automation environment")
-
-
 def variables_for_cell(args: argparse.Namespace, cell: str, prior_summary: str) -> dict[str, str]:
     return {
         "run_id": args.run_id,
@@ -221,8 +186,6 @@ def start_and_wait_cell(
     run_dir: Path,
     cell: str,
     prior_summary: str,
-    parent_conversation_id: str,
-    child_secrets: dict[str, str] | None = None,
 ) -> dict[str, Any]:
     prompt = oh.render_prompt(PROMPT_ROOT / f"{cell}.md", variables_for_cell(args, cell, prior_summary))
     entry: dict[str, Any] = {"name": cell, "start_attempts": []}
@@ -238,7 +201,6 @@ def start_and_wait_cell(
             branch=args.branch,
             llm_model=args.child_llm_model,
             parent_conversation_id=None,
-            secrets=child_secrets,
             run=True,
             system_message_suffix=(
                 "Foundry demo child conversation. Keep outputs concise, evidence-backed, "
@@ -351,7 +313,9 @@ def lifecycle_report(args: argparse.Namespace, entries: list[dict[str, Any]], pa
         lines.append(f"| `{entry['name']}` | {entry.get('status', 'unknown')} | {link} | {artifact} |")
     lines.extend(["", "## Model Routing Evidence", ""])
     lines.append("- Parent selected the RTL specialist lane for RTL/SystemVerilog implementation.")
-    lines.append("- The RTL child was created through Conversation v1 with `HF_TOKEN` passed as a child-scoped secret.")
+    lines.append(
+        "- The RTL child was created through Conversation v1; sandbox-provided `HF_TOKEN` enables the ChipCraftX helper."
+    )
     lines.append("- The QA child uses deterministic EDA/tool evidence as the correctness authority.")
     lines.extend(
         [
@@ -400,7 +364,6 @@ def run_factory(args: argparse.Namespace) -> int:
         explicit_id=args.parent_conversation_id or default_parent_conversation_id(),
     )
     parent_conversation_id = str(parent_conversation.get("id") or args.parent_conversation_id or "")
-    hf_token = get_secret_for_child(base=base, parent_conversation=parent_conversation, secret_name="HF_TOKEN")
 
     run_dir = REPO_ROOT / "factory_runs" / args.run_id
     run_dir.mkdir(parents=True, exist_ok=True)
@@ -409,7 +372,6 @@ def run_factory(args: argparse.Namespace) -> int:
     entries: list[dict[str, Any]] = []
     prior_summary = ""
     for cell in args.cells:
-        child_secrets = {"HF_TOKEN": hf_token} if cell == "rtl-specialist" else None
         entry = start_and_wait_cell(
             args=args,
             base=base,
@@ -417,8 +379,6 @@ def run_factory(args: argparse.Namespace) -> int:
             run_dir=run_dir,
             cell=cell,
             prior_summary=prior_summary,
-            parent_conversation_id=parent_conversation_id,
-            child_secrets=child_secrets,
         )
         entries.append(entry)
         write_json(run_dir / "children.json", entries)

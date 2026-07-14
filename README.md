@@ -31,7 +31,7 @@ design workflows. Common requirements include:
 Jira RTL request
   -> parent OpenHands automation classifies and routes the work
   -> parent creates child conversations through Conversation v1
-  -> RTL child receives HF_TOKEN as a child-scoped secret and uses ChipCraftX
+  -> RTL child uses sandbox-provided HF_TOKEN and ChipCraftX
   -> PR with RTL and validation evidence
   -> QA child runs EDA validation from the repo-local validation skill
   -> human review and merge gate
@@ -42,7 +42,7 @@ Jira RTL request
 | Work cell | Trigger | What OpenHands does | Human control point |
 | --- | --- | --- | --- |
 | **Parent router** | Jira `rtl-request` | Summarizes the ask, applies routing policy, and starts child conversations through Conversation v1 | Scope and system-of-record visibility |
-| **RTL specialist** | Parent-created child conversation | Receives `HF_TOKEN` as a child-scoped secret, calls the ChipCraftX helper, integrates RTL, opens or updates a PR | PR review and design acceptance |
+| **RTL specialist** | Parent-created child conversation | Uses sandbox-provided `HF_TOKEN`, calls the ChipCraftX helper, integrates RTL, opens or updates a PR | PR review and design acceptance |
 | **EDA QA** | Parent-created child conversation after RTL final | Runs static checks plus Verilator, Icarus, and Yosys when installed | Validation acceptance and merge readiness |
 | **Review** | GitHub `openhands-rtl-review` label | Reviews RTL diffs, evidence quality, and risk areas | Which findings block merge |
 
@@ -116,8 +116,8 @@ Use this repository as a pattern:
 2. Write one parent prompt that classifies the request and applies policy.
 3. Start standalone child conversations through Conversation v1 with narrow
    child prompts and explicit run links in the parent report.
-4. Pass child-specific secrets with the v1 `secrets` field rather than printing
-   or storing them.
+4. Configure secrets in OpenHands or the sandbox secret store rather than
+   printing or shuttling them through prompts.
 5. Put reusable behavior and scripts inside repo-local skills.
 6. Use labels, PRs, comments, and artifacts as the audit trail.
 7. Keep secrets in OpenHands or local environment stores, never in Git.
