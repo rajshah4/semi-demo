@@ -32,7 +32,7 @@ module sync_fifo #(
 
   assign do_write = wr_en && !full;
   assign do_read = rd_en && !empty;
-  assign full = (count == DEPTH);
+  assign full = (count == (ADDR_WIDTH+1)'(DEPTH));
   assign empty = (count == 0);
 
   always_ff @(posedge clk) begin
@@ -44,12 +44,12 @@ module sync_fifo #(
     end else begin
       if (do_write) begin
         mem[wr_ptr] <= din;
-        wr_ptr <= (wr_ptr + 1) % DEPTH;
+        wr_ptr <= (wr_ptr == ADDR_WIDTH'(DEPTH-1)) ? '0 : wr_ptr + ADDR_WIDTH'(1);
       end
 
       if (do_read) begin
         dout <= mem[rd_ptr];
-        rd_ptr <= (rd_ptr + 1) % DEPTH;
+        rd_ptr <= (rd_ptr == ADDR_WIDTH'(DEPTH-1)) ? '0 : rd_ptr + ADDR_WIDTH'(1);
       end
 
       case ({do_write, do_read})
