@@ -73,8 +73,7 @@ python3 scripts/run_foundry_factory.py \
 The helper is the control plane. It uses:
 
 - `POST /api/v1/app-conversations` to create child conversations
-- `parent_conversation_id` when the current parent conversation can be
-  identified
+- standalone child conversations; do not set `parent_conversation_id`
 - `secrets: {"HF_TOKEN": ...}` only for the RTL specialist child
 - `/api/v1/app-conversations/start-tasks` and
   `/api/v1/conversation/{id}/events/search` to monitor child lifecycle

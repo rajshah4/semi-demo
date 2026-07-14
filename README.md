@@ -114,8 +114,8 @@ Use this repository as a pattern:
 
 1. Pick the system of record: Jira, GitHub, ServiceNow, or an internal portal.
 2. Write one parent prompt that classifies the request and applies policy.
-3. Start child conversations through Conversation v1 with
-   `parent_conversation_id` and narrow child prompts.
+3. Start standalone child conversations through Conversation v1 with narrow
+   child prompts and explicit run links in the parent report.
 4. Pass child-specific secrets with the v1 `secrets` field rather than printing
    or storing them.
 5. Put reusable behavior and scripts inside repo-local skills.

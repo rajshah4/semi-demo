@@ -249,7 +249,7 @@ def start_and_wait_cell(
             repository=args.repo_slug,
             branch=args.branch,
             llm_model=args.child_llm_model,
-            parent_conversation_id=parent_conversation_id or None,
+            parent_conversation_id=None,
             secrets=child_secrets,
             run=True,
             system_message_suffix=(
