@@ -1,8 +1,10 @@
-// Starter RTL for the OpenHands sync FIFO example work cell.
+// Synthesizable synchronous FIFO implementation for OpenHands foundry demo.
 //
-// This file is intentionally incomplete. The `openhands-rtl-build` automation
-// should replace it with a synthesizable FIFO implementation, ideally after
-// switching to the `HF-ChipCraftX-RTLGen-7B` specialist profile.
+// Features:
+// - Parameterized WIDTH and DEPTH
+// - Synchronous active-low reset
+// - Write/read handshakes with full/empty flags
+// - Simultaneous read/write support
 
 module sync_fifo #(
   parameter int WIDTH = 8,
@@ -18,9 +20,50 @@ module sync_fifo #(
   output logic             empty
 );
 
-  // TODO: implement storage, pointers, occupancy count, and flag logic.
-  assign dout = '0;
-  assign full = 1'b0;
-  assign empty = 1'b1;
+  localparam int ADDR_WIDTH = $clog2(DEPTH);
+
+  logic [WIDTH-1:0] mem [0:DEPTH-1];
+  logic [ADDR_WIDTH-1:0] wr_ptr;
+  logic [ADDR_WIDTH-1:0] rd_ptr;
+  logic [ADDR_WIDTH:0] count;
+
+  wire wr_valid = wr_en && !full;
+  wire rd_valid = rd_en && !empty;
+
+  always_ff @(posedge clk) begin
+    if (!rst_n) begin
+      wr_ptr <= '0;
+      rd_ptr <= '0;
+      count <= '0;
+    end else begin
+      if (wr_valid && !rd_valid) begin
+        wr_ptr <= (wr_ptr == DEPTH-1) ? '0 : wr_ptr + 1'b1;
+        count <= count + 1'b1;
+      end else if (rd_valid && !wr_valid) begin
+        rd_ptr <= (rd_ptr == DEPTH-1) ? '0 : rd_ptr + 1'b1;
+        count <= count - 1'b1;
+      end else if (wr_valid && rd_valid) begin
+        wr_ptr <= (wr_ptr == DEPTH-1) ? '0 : wr_ptr + 1'b1;
+        rd_ptr <= (rd_ptr == DEPTH-1) ? '0 : rd_ptr + 1'b1;
+      end
+    end
+  end
+
+  always_ff @(posedge clk) begin
+    if (wr_valid) begin
+      mem[wr_ptr] <= din;
+    end
+  end
+
+  always_ff @(posedge clk) begin
+    if (!rst_n) begin
+      dout <= '0;
+    end else if (rd_valid) begin
+      dout <= mem[rd_ptr];
+    end
+  end
+
+  assign full = (count == DEPTH);
+  assign empty = (count == 0);
 
 endmodule
