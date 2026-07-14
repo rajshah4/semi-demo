@@ -129,63 +129,15 @@ def parse_status(final_text: str, fallback: str) -> str:
     return fallback
 
 
-def session_api_key() -> str:
-    for env_name in ("SESSION_API_KEY", "OH_SESSION_API_KEYS_0", "OPENHANDS_SESSION_API_KEY"):
-        value = os.getenv(env_name)
-        if value:
-            return value.strip()
-    return ""
-
-
-def runtime_secret(secret_name: str) -> str:
-    base = (os.getenv("AGENT_SERVER_URL") or os.getenv("RUNTIME_URL") or "").rstrip("/")
-    key = session_api_key()
-    if not base or not key:
-        return ""
-    request = urllib.request.Request(
-        f"{base}/api/settings/secrets/{secret_name}",
-        headers={"X-Session-API-Key": key, "Accept": "application/json"},
-    )
-    try:
-        with urllib.request.urlopen(request, timeout=30) as response:
-            raw = response.read().decode("utf-8", errors="replace").strip()
-    except Exception:
-        return ""
-    if not raw:
-        return ""
-    try:
-        decoded = json.loads(raw)
-    except json.JSONDecodeError:
-        return raw.strip().strip('"').strip("'")
-    return decoded if isinstance(decoded, str) else str(decoded or "")
-
-
-def runtime_secret_map(secret_names: tuple[str, ...]) -> dict[str, str]:
+def env_secret_map(secret_names: tuple[str, ...]) -> dict[str, str]:
     secrets: dict[str, str] = {}
     for name in secret_names:
-        value = os.getenv(name) or runtime_secret(name)
+        value = os.getenv(name)
         if value:
             secrets[name] = value
     if secrets and "HF_TOKEN" not in secrets:
         secrets["HF_TOKEN"] = next(iter(secrets.values()))
     return secrets
-
-
-def secret_wait_seconds() -> float:
-    raw = os.getenv("RTL_SECRET_WAIT_SECONDS", "60")
-    try:
-        return max(0.0, float(raw))
-    except ValueError:
-        return 60.0
-
-
-def wait_runtime_secret_map(secret_names: tuple[str, ...]) -> dict[str, str]:
-    deadline = time.monotonic() + secret_wait_seconds()
-    while True:
-        secrets = runtime_secret_map(secret_names)
-        if secrets or time.monotonic() >= deadline:
-            return secrets
-        time.sleep(2)
 
 
 def default_parent_conversation_id() -> str:
@@ -441,12 +393,11 @@ def run_factory(args: argparse.Namespace) -> int:
     entries: list[dict[str, Any]] = []
     prior_summary = ""
     for cell in args.cells:
-        child_secrets = wait_runtime_secret_map(RTL_SECRET_NAMES) if cell == "rtl-specialist" else None
+        child_secrets = env_secret_map(RTL_SECRET_NAMES) if cell == "rtl-specialist" else None
         if cell == "rtl-specialist" and not child_secrets:
             raise RuntimeError(
-                "HF_TOKEN was not available in the parent environment or Agent Server secret store; "
-                "configure HF_TOKEN before starting the RTL specialist child. "
-                "Set RTL_SECRET_WAIT_SECONDS to wait longer for runtime secret injection."
+                "HF_TOKEN was not available in the parent environment; configure HF_TOKEN "
+                "as an OpenHands automation/runtime secret before starting the RTL specialist child."
             )
         entry = start_and_wait_cell(
             args=args,
