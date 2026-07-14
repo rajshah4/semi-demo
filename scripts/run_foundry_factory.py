@@ -191,23 +191,11 @@ def get_secret_for_child(
     parent_conversation: dict[str, Any],
     secret_name: str,
 ) -> str:
+    del base, parent_conversation
     value = os.getenv(secret_name)
     if value:
         return value
-
-    sandbox_id = str(parent_conversation.get("sandbox_id") or "")
-    session_key = os.getenv("SESSION_API_KEY", "")
-    if sandbox_id and session_key:
-        value = read_scoped_secret(
-            base=base,
-            sandbox_id=sandbox_id,
-            session_api_key=session_key,
-            secret_name=secret_name,
-        )
-        if value:
-            return value
-
-    raise RuntimeError(f"{secret_name} is required for the RTL specialist child")
+    raise RuntimeError(f"{secret_name} is required in the parent automation environment")
 
 
 def variables_for_cell(args: argparse.Namespace, cell: str, prior_summary: str) -> dict[str, str]:

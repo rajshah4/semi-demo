@@ -61,6 +61,7 @@ not print environment values while running it:
 
 ```bash
 export OPENHANDS_API_KEY_RAJISTICS="${OPENHANDS_API_KEY_RAJISTICS:-${OPENHANDS_API_KEY_ORG:-${OPENHANDS_API_KEY:-}}}"
+export HF_TOKEN="${HF_TOKEN:-}"
 python3 scripts/run_foundry_factory.py \
   --base-url https://app.replicated.rajistics.com \
   --repo-slug rajshah4/semi-demo \
