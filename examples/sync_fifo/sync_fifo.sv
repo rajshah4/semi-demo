@@ -31,7 +31,7 @@ module sync_fifo #(
   
   // Flag generation
   assign empty = (count == 0);
-  assign full  = (count == DEPTH);
+  assign full  = (count == (ADDR_WIDTH+1)'(DEPTH));
   
   // Write operation
   always_ff @(posedge clk) begin
@@ -39,7 +39,7 @@ module sync_fifo #(
       wr_ptr <= '0;
     end else if (wr_en && !full) begin
       mem[wr_ptr] <= din;
-      wr_ptr <= (wr_ptr == DEPTH-1) ? '0 : wr_ptr + 1'b1;
+      wr_ptr <= (wr_ptr == ADDR_WIDTH'(DEPTH-1)) ? '0 : wr_ptr + 1'b1;
     end
   end
   
@@ -50,7 +50,7 @@ module sync_fifo #(
       dout <= '0;
     end else if (rd_en && !empty) begin
       dout <= mem[rd_ptr];
-      rd_ptr <= (rd_ptr == DEPTH-1) ? '0 : rd_ptr + 1'b1;
+      rd_ptr <= (rd_ptr == ADDR_WIDTH'(DEPTH-1)) ? '0 : rd_ptr + 1'b1;
     end
   end
   
