@@ -31,7 +31,7 @@ design workflows. Common requirements include:
 Jira RTL request
   -> parent OpenHands automation classifies and routes the work
   -> parent creates child conversations through Conversation v1
-  -> RTL child uses runtime-provisioned HF_TOKEN and ChipCraftX
+  -> RTL child receives HF_TOKEN as a create-time child secret and calls ChipCraftX
   -> PR with RTL and validation evidence
   -> QA child runs EDA validation from the repo-local validation skill
   -> human review and merge gate
@@ -42,7 +42,7 @@ Jira RTL request
 | Work cell | Trigger | What OpenHands does | Human control point |
 | --- | --- | --- | --- |
 | **Parent router** | Jira `rtl-request` | Summarizes the ask, applies routing policy, and starts child conversations through Conversation v1 | Scope and system-of-record visibility |
-| **RTL specialist** | Parent-created child conversation | Uses runtime-provisioned `HF_TOKEN`, calls the ChipCraftX helper, integrates RTL, opens or updates a PR | PR review and design acceptance |
+| **RTL specialist** | Parent-created child conversation | Receives `HF_TOKEN` as a create-time child secret, calls the ChipCraftX helper, integrates RTL, opens or updates a PR | PR review and design acceptance |
 | **EDA QA** | Parent-created child conversation after RTL final | Runs static checks plus Verilator, Icarus, and Yosys when installed | Validation acceptance and merge readiness |
 | **Review** | GitHub `openhands-rtl-review` label | Reviews RTL diffs, evidence quality, and risk areas | Which findings block merge |
 

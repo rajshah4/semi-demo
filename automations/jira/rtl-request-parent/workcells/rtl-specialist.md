@@ -31,15 +31,17 @@ You are Child Agent 1: the RTL specialist for the foundry IT workflow.
 3. Call the ChipCraftX helper before first-pass RTL generation:
 
    ```bash
-   python3 skills/foundry-rtl-workflow/scripts/chipcraftx_generate_rtl.py \
+   HF_TOKEN="${HF_TOKEN:-}" python3 skills/foundry-rtl-workflow/scripts/chipcraftx_generate_rtl.py \
      --summary "{{request_title}}. {{request_body}}" \
      --max-new-tokens 700 \
      --retries 5
    ```
 
-   `HF_TOKEN` is supplied to this child through the Conversation v1 `secrets`
-   field by the parent supervisor. Do not print token values or environment
-   dumps.
+   The explicit `HF_TOKEN="${HF_TOKEN:-}"` prefix is intentional: it references
+   the child secret so the terminal command receives it without printing the
+   value. `HF_TOKEN` is supplied to this child through the Conversation v1
+   `secrets` field by the parent supervisor. Do not print token values or
+   environment dumps.
 4. If the helper reports `CHIPCRAFTX_STATUS=used`, use
    `artifacts/chipcraftx/chipcraftx_generated_rtl.sv` as the first RTL draft,
    then review, repair, and integrate it into `examples/sync_fifo/sync_fifo.sv`.

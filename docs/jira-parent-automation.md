@@ -36,8 +36,8 @@ focused child conversations through the OpenHands Conversation v1 API.
 3. Routing policy selects the model, tool, or child-agent lane.
 4. Parent starts Child Agent 1: RTL specialist as a standalone Conversation v1
    child.
-5. The RTL child receives `HF_TOKEN` through the child runtime secret endpoint
-   before the child run starts.
+5. The RTL child receives `HF_TOKEN` through the Conversation v1 create-time
+   `secrets` field.
 6. RTL child calls the ChipCraftX lane when available, patches RTL, runs
    validation, and opens or updates a PR.
 7. Parent starts Child Agent 2: Verification / EDA QA after the RTL child

@@ -267,7 +267,8 @@ def start_and_wait_cell(
             branch=args.branch,
             llm_model=args.child_llm_model,
             parent_conversation_id=None,
-            run=not child_secrets,
+            secrets=child_secrets,
+            run=True,
             system_message_suffix=(
                 "Foundry demo child conversation. Keep outputs concise, evidence-backed, "
                 "and secret-safe. Never print token or environment values."
@@ -314,18 +315,6 @@ def start_and_wait_cell(
         time.sleep(min(30, 5 * attempt))
 
     entry.update(oh.conversation_summary(base, conversation_id))
-    if child_secrets:
-        entry["runtime_secret_provisioning"] = oh.provision_runtime_secrets(
-            base=base,
-            headers=headers,
-            conversation_id=conversation_id,
-            secrets=child_secrets,
-        )
-        entry["runtime_run"] = oh.run_runtime_conversation(
-            base=base,
-            headers=headers,
-            conversation_id=conversation_id,
-        )
     write_json(run_dir / f"{cell}.conversation.json", entry)
 
     terminal = oh.poll_conversation(
@@ -392,7 +381,7 @@ def lifecycle_report(args: argparse.Namespace, entries: list[dict[str, Any]], pa
     lines.extend(["", "## Model Routing Evidence", ""])
     lines.append("- Parent selected the RTL specialist lane for RTL/SystemVerilog implementation.")
     lines.append(
-        "- The RTL child was created through Conversation v1 with runtime-provisioned specialist credentials for ChipCraftX."
+        "- The RTL child was created through Conversation v1 with create-time specialist credentials for ChipCraftX."
     )
     lines.append("- The QA child uses deterministic EDA/tool evidence as the correctness authority.")
     lines.extend(
